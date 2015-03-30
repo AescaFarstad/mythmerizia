@@ -3,6 +3,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import minigames.tsp.TSPBinder;
+	import resources.Resources;
 
 	
 	[Frame(factoryClass="Preloader")]
@@ -20,8 +21,13 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
+			S.resources = new Resources();
+			S.resources.loadResources();
+			S.text = S.resources.text;			
+			S.format = S.resources.text.format;			
 			var binder:TSPBinder = new TSPBinder();
 			binder.start(this);
+			
 			
 		}
 

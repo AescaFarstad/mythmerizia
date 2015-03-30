@@ -6,8 +6,9 @@ package minigames.tsp.view
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.utils.getTimer;	
-	import minigames.tsp.AIInteraction;
+	import minigames.tsp.AISolution;
 	import minigames.tsp.BaseInteraction;
+	import minigames.tsp.PencilInteraction;
 	import minigames.tsp.RubberInteraction;
 	import minigames.tsp.TSPModel;
 	import minigames.tsp.view.BasePlaneView;
@@ -23,7 +24,8 @@ package minigames.tsp.view
 		private var interaction:BaseInteraction;
 		private var view:BasePlaneView;
 		private var label:Button;
-		private var aiSolution:AIInteraction;
+		private var aiSolution:AISolution;
+		private var aiView:BasePlaneView;
 		
 		public function TSPGameView() 
 		{
@@ -40,12 +42,12 @@ package minigames.tsp.view
 			label.text = text;
 		}
 		
-		public function init(model:TSPModel, interaction:BaseInteraction, aiSolution:AIInteraction):void 
+		public function init(model:TSPModel, interaction:BaseInteraction, aiSolution:AISolution):void 
 		{
 			this.aiSolution = aiSolution;
 			this.interaction = interaction;
 			this.model = model;
-			planeView = new RubberPlaneView(interaction as RubberInteraction);
+			planeView = getPanelView(interaction); 
 			addChild(planeView);
 			planeView.x = 20;
 			planeView.y = 20;
@@ -56,9 +58,20 @@ package minigames.tsp.view
 			label.y = height - label.height;
 		}
 		
+		private function getPanelView(interaction:BaseInteraction):BasePlaneView 
+		{
+			if (interaction is RubberInteraction)
+				return new RubberPlaneView(interaction as RubberInteraction);
+			if (interaction is PencilInteraction)
+				return new PencilPlaneView(interaction as PencilInteraction);
+			return null;
+		}
+		
 		private function onBtnClick(e:Event):void 
 		{
-			interaction.loadSolution(aiSolution.solution);
+			interaction.loadSolution(aiSolution.solution);/*
+			aiView = new BasePlaneView(interaction);
+			addChild(aiView);*/
 		}
 	}
 }

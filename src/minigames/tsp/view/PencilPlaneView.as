@@ -2,6 +2,8 @@ package minigames.tsp.view
 {
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import minigames.tsp.Edge;
+	import minigames.tsp.PencilInteraction;
 	
 	
 	public class PencilPlaneView extends BasePlaneView 
@@ -16,7 +18,7 @@ package minigames.tsp.view
 		
 		override public function render():void 
 		{
-			super();
+			super.render();
 			for (var i:int = 0; i < model.nodes.length; i++) 
 			{
 				if (interaction.interactable == model.nodes[i])

@@ -3,13 +3,13 @@ package minigames.tsp
 	import minigames.tsp.solvers.ITSPSolver;
 	import minigames.tsp.solvers.TSPComboSolver;
 	
-	public class AIInteraction
+	public class AISolution
 	{		
 		private var _solution:Vector.<Node>;
 		private var solutionLength:Number;
 		private var model:TSPModel;
 		
-		public function AIInteraction(model:TSPModel) 
+		public function AISolution(model:TSPModel) 
 		{
 			this.model = model;
 			_solution = TSPComboSolver.initWithRandom(model);

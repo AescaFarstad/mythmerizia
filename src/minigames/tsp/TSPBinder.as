@@ -15,7 +15,7 @@ package minigames.tsp
 	{
 		private var model:TSPModel;
 		private var interaction:BaseInteraction;
-		private var aiSolution:AIInteraction;
+		private var aiSolution:AISolution;
 		private var view:TSPGameView;
 		
 		public function TSPBinder() 
@@ -29,7 +29,7 @@ package minigames.tsp
 			model = new TSPModel();
 			model.init(25, 3, 500, 400);
 			
-			aiSolution = new AIInteraction(model);
+			aiSolution = new AISolution(model);
 			aiSolution.improve(new TSPComboSolver());
 			
 			interaction = new RubberInteraction(model);
@@ -60,9 +60,9 @@ package minigames.tsp
 			if (e.keyCode == 13)
 			{
 				model.init(25, 3, 500, 400);
-				interaction = new PencilInteraction(model);
+				interaction = new RubberInteraction(model);
 				interaction.loadConvexHull();
-				aiSolution = new AIInteraction(model);
+				aiSolution = new AISolution(model);
 				aiSolution.improve(new TSPComboSolver());
 			}
 			if (e.keyCode == 32)

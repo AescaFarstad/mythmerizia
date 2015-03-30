@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Content>
+  <Meta>
+    <numberOfLocales>1</numberOfLocales>
+    <libraryPath>C:\Users\Aesca\Documents\Reposanctuary\mythmerizia\lib</libraryPath>
+    <runningTimePath />
+    <includeEmbeded>True</includeEmbeded>
+    <includeDinamic>False</includeDinamic>
+    <includeDocs>True</includeDocs>
+    <package>resources</package>
+    <targetSWCPath />
+    <targetCodePath>C:\Users\Aesca\Documents\Reposanctuary\mythmerizia\src</targetCodePath>
+    <generateSWCnSWF>False</generateSWCnSWF>
+    <generateCode>True</generateCode>
+    <flexSDKPath>C:\Program Files (x86)\FlashDevelop\Tools\sdk</flexSDKPath>
+  </Meta>
+  <Resources type="folder" id="_root_">
+    <text type="folder" id="c2f11b">
+      <test type="folder" id="8edd84">
+        <testText type="localText" id="def474">
+          <translation index="0">temporary text</translation>
+        </testText>
+      </test>
+      <format type="folder" id="1f8ba2">
+        <edge type="localText" id="b0d3c2">
+          <translation index="0">&lt;#edge#{$fontSize}#:</translation>
+        </edge>
+      </format>
+    </text>
+  </Resources>
+</Content>
