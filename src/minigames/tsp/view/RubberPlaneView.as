@@ -1,6 +1,8 @@
 package minigames.tsp.view 
 {
+	import flash.geom.Point;
 	import minigames.tsp.BaseInteraction;
+	import minigames.tsp.Node;
 	import minigames.tsp.RubberInteraction;
 	import minigames.tsp.view.BasePlaneView;
 	
@@ -21,12 +23,24 @@ package minigames.tsp.view
 			
 			for (var i:int = 0; i < model.nodes.length; i++) 
 			{
-				if (interaction.interactable == model.nodes[i])
+				var radius:int;
+				var color:uint;
+				var hasEdges:Boolean = interaction.getEdgeWithPoint(model.nodes[i]);
+				if (interaction.interactable == model.nodes[i] && hasEdges)
 				{
-					var radius:int = 7;
-					var color:uint = 0xffff00;
+					var node:Node = interaction.interactable as Node;
+					radius = 6;
+					color = 0xff0000;
+					var topCorner:Point = new Point(node.x - radius / Math.SQRT2, node.y - radius / Math.SQRT2);
+					graphics.lineStyle(3, color, 1);
+					graphics.moveTo(topCorner.x, topCorner.y);
+					graphics.lineTo(topCorner.x + radius * 2, topCorner.y + radius * 2);
+					graphics.moveTo(topCorner.x, topCorner.y + radius * 2);
+					graphics.lineTo(topCorner.x + radius * 2, topCorner.y);
+					graphics.lineStyle(0, color, 0);
+					continue;
 				}
-				else if (interaction.getEdgeWithPoint(model.nodes[i]))
+				else if (hasEdges)
 				{
 					radius = 3;
 					color = 0x00aa00;
@@ -40,20 +54,11 @@ package minigames.tsp.view
 				graphics.drawCircle(model.nodes[i].x, model.nodes[i].y, radius);
 				graphics.endFill();
 			}
-			/*
-			if (interaction.thirdPoints)
-			{
-				for (i = 0; i < interaction.thirdPoints.length; i++) 
-				{
-					graphics.beginFill(0);
-					graphics.drawCircle(interaction.thirdPoints[i].x, interaction.thirdPoints[i].y, 2);
-					graphics.endFill();
-				}
-			}*/
+			
 			//trace(interaction.edges.length);
 			for (var j:int = 0; j < interaction.edges.length; j++) 
 			{
-				color = 0x00ff00;
+				color = interaction.interactable == interaction.edges[j] ? 0x00aa00 : 0x00ff00;
 				var thickness:int = 1;
 				graphics.lineStyle(thickness, color, 1);
 				graphics.moveTo(interaction.edges[j].p1.x, interaction.edges[j].p1.y);
@@ -70,6 +75,29 @@ package minigames.tsp.view
 					graphics.lineTo(interaction.phantomEdges[j].p2.x, interaction.phantomEdges[j].p2.y);
 				}
 			}
+			/*
+			if (interaction.thirdPoints)
+			{
+				for (i = 0; i < interaction.thirdPoints.length; i++) 
+				{
+					graphics.beginFill(0);
+					graphics.drawCircle(interaction.thirdPoints[i].x, interaction.thirdPoints[i].y, 2);
+					graphics.endFill();
+				}
+			}*/
+			/*if (interaction.thirdEdges)
+			{
+				for (j = 0; j < interaction.thirdEdges.length; j++) 
+				{
+					if (interaction.edges.indexOf(interaction.thirdEdges[j]) != -1)
+						continue;
+					color = 0x606060;
+					thickness = 1;
+					graphics.lineStyle(thickness, color, 1);
+					graphics.moveTo(interaction.thirdEdges[j].p1.x, interaction.thirdEdges[j].p1.y);
+					graphics.lineTo(interaction.thirdEdges[j].p2.x, interaction.thirdEdges[j].p2.y);
+				}
+			}*/
 			/*
 			if (interaction.pairings)
 			{

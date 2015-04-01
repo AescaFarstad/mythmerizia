@@ -1,38 +1,33 @@
 package minigames.tsp.view 
 {
+	import flash.display.Sprite;
+	import minigames.tsp.AIInteraction;
 	import minigames.tsp.AISolution;
 	import minigames.tsp.BaseInteraction;
 	
 	
 	public class AIPlaneView extends BasePlaneView 
 	{
-		private var aiSolution:AISolution;
+		private var interaction:AIInteraction;
 		
-		public function AIPlaneView(interaction:BaseInteraction, aiSolution:AISolution) 
+		public function AIPlaneView(interaction:BaseInteraction) 
 		{
 			super(interaction);
-			this.aiSolution = aiSolution;			
+			this.interaction = interaction as AIInteraction;
+			
+			
 		}
 		
-		override public function render():void 
+		override public function render():void
 		{
 			super.render();
-			for (var i:int = 0; i < model.nodes.length; i++) 
+			for (var j:int = 0; j < interaction.edges.length; j++) 
 			{
-				radius = 3;
-				color = 0x0000aa;
-				graphics.beginFill(color);
-				graphics.drawCircle(model.nodes[i].x, model.nodes[i].y, radius);
-				graphics.endFill();
-			}
-			
-			for (var j:int = 0; j < aiSolution.edges.length; j++) 
-			{
-				color = 0x0000ff;
-				var thickness:int = 1;
-				graphics.lineStyle(thickness, color, 1);				
-				graphics.moveTo(aiSolution.edges[j].p1.x, aiSolution.edges[j].p1.y);
-				graphics.lineTo(aiSolution.edges[j].p2.x, aiSolution.edges[j].p2.y);
+				var color:uint = 0x0000ff;
+				var thickness:int = 2;
+				graphics.lineStyle(thickness, color, 1);
+				graphics.moveTo(interaction.edges[j].p1.x, interaction.edges[j].p1.y);
+				graphics.lineTo(interaction.edges[j].p2.x, interaction.edges[j].p2.y);
 			}
 		}
 	}

@@ -6,6 +6,7 @@ package minigames.tsp
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import minigames.tsp.solvers.TSP2OptSolver;
+	import minigames.tsp.solvers.TSP3OptSolver;
 	import minigames.tsp.solvers.TSPComboSolver;
 	import minigames.tsp.view.BasePlaneView;
 	import minigames.tsp.view.TSPGameView;
@@ -15,7 +16,7 @@ package minigames.tsp
 	{
 		private var model:TSPModel;
 		private var interaction:BaseInteraction;
-		private var aiSolution:AISolution;
+		private var aiInteraction:AIInteraction;
 		private var view:TSPGameView;
 		
 		public function TSPBinder() 
@@ -27,17 +28,19 @@ package minigames.tsp
 		public function start(parent:DisplayObjectContainer):void
 		{
 			model = new TSPModel();
-			model.init(25, 3, 500, 400);
+			model.init(30, 4, 500, 400);
 			
-			aiSolution = new AISolution(model);
-			aiSolution.improve(new TSPComboSolver());
+			aiInteraction = new AIInteraction(model);
+			aiInteraction.solution.improve(new TSPComboSolver());
+			aiInteraction.solution.improve(new TSP3OptSolver());
+			//trace(model.solutionToString(aiSolution.solution));
 			
 			interaction = new RubberInteraction(model);
 			interaction.loadConvexHull();
 			
 			view = new TSPGameView();
 			parent.addChild(view);
-			view.init(model, interaction, aiSolution);
+			view.init(model, interaction, aiInteraction);
 			
 			parent.addEventListener(Event.ENTER_FRAME, onFrame);
 			parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -58,17 +61,18 @@ package minigames.tsp
 		private function onKeyDown(e:KeyboardEvent):void 
 		{
 			if (e.keyCode == 13)
-			{
+			{/*
 				model.init(25, 3, 500, 400);
 				interaction = new RubberInteraction(model);
 				interaction.loadConvexHull();
 				aiSolution = new AISolution(model);
-				aiSolution.improve(new TSPComboSolver());
+				aiSolution.improve(new TSPComboSolver());*/
 			}
 			if (e.keyCode == 32)
 			{
-				aiSolution.improve(new TSP2OptSolver());
-				interaction.loadSolution(aiSolution.solution);
+				interaction.solution.improve(new TSP2OptSolver());
+				interaction.solution.improve(new TSP3OptSolver());
+				//interaction.loadSolution(aiInteraction.solution);
 			}
 		}
 		
@@ -76,7 +80,7 @@ package minigames.tsp
 		{
 			interaction.updateInteractable(view.planeView.mouseX, view.planeView.mouseY);
 			
-			view.giveFeedback(interaction.getFeedback() + " а можно было бы " + model.getLength(aiSolution.solution).toFixed());
+			view.giveFeedback(interaction.getFeedback() + " а можно было бы " + aiInteraction.solution.length.toFixed());
 			view.update();
 		}
 		

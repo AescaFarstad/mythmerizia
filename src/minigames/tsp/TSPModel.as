@@ -82,27 +82,6 @@ package minigames.tsp
 			}
 			return bestNode;
 		}
-			
-		public function getLength(solution:Vector.<Node>):Number 
-		{
-			var result:Number = 0;
-			for (var i:int = 1; i < solution.length; i++) 
-			{
-				result += solution[i - 1].distanceTo(solution[i].x, solution[i].y);
-			}
-			result += solution[solution.length - 1].distanceTo(solution[0].x, solution[0].y);
-			return result;
-		}
-		
-		public function solutionToString(solution:Vector.<Node>):String 
-		{
-			var arr:Array = [];
-			for (var i:int = 0; i < solution.length; i++) 
-			{
-				arr.push(solution[i].index);
-			}
-			return arr.join(", ");
-		}
 	}
 
 }

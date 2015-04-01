@@ -14,10 +14,12 @@ package minigames.tsp.view
 		protected var model:TSPModel;
 		public var edgesToView:Dictionary;
 		private var renderCounter:int;
+		private var showLabels:Boolean;
 		
-		public function BasePlaneView(interaction:BaseInteraction) 
+		public function BasePlaneView(interaction:BaseInteraction, showLabels:Boolean = true) 
 		{
 			super();
+			this.showLabels = showLabels;
 			this.interaction = interaction;
 			model = interaction.model;
 			edgesToView = new Dictionary();
@@ -33,24 +35,27 @@ package minigames.tsp.view
 			graphics.drawRect(0, 0, 800, 600 - x);
 			graphics.endFill();
 			
-			for (var i:int = 0; i < interaction.edges.length; i++) 
+			if (showLabels)
 			{
-				if (!edgesToView[interaction.edges[i]])
+				for (var i:int = 0; i < interaction.edges.length; i++) 
 				{
-					edgesToView[interaction.edges[i]] = new EdgeView();
-					addChild(edgesToView[interaction.edges[i]]);
-					edgesToView[interaction.edges[i]].init(interaction.edges[i]);
+					if (!edgesToView[interaction.edges[i]])
+					{
+						edgesToView[interaction.edges[i]] = new EdgeView();
+						addChild(edgesToView[interaction.edges[i]]);
+						edgesToView[interaction.edges[i]].init(interaction.edges[i]);
+					}
+					edgesToView[interaction.edges[i]].lastUpdate = renderCounter;
 				}
-				edgesToView[interaction.edges[i]].lastUpdate = renderCounter;
-			}
-			
-			for (var edge:* in edgesToView)
-			{
-				if (edgesToView[edge].lastUpdate < renderCounter)
+				
+				for (var edge:* in edgesToView)
 				{
-					edgesToView[edge].cleanUp();
-					delete edgesToView[edge];
-				}
+					if (edgesToView[edge].lastUpdate < renderCounter)
+					{
+						edgesToView[edge].cleanUp();
+						delete edgesToView[edge];
+					}
+				}				
 			}
 			
 		}

@@ -2,6 +2,7 @@ package minigames.tsp.solvers
 {
 	import minigames.tsp.Node;
 	import minigames.tsp.TSPModel;
+	import minigames.tsp.TSPSolution;
 	import util.HMath;
 	
 	public class TSPComboSolver implements ITSPSolver
@@ -50,7 +51,7 @@ package minigames.tsp.solvers
 				{
 					new TSP2OptSolver().improve(solution, model);
 				}
-				var distance:Number = model.getLength(solution);
+				var distance:Number = TSPSolution.getSolutionLength(solution);
 				if (distance < bestDistance)
 				{
 					bestDistance = distance;

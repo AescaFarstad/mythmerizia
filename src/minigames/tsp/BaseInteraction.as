@@ -12,22 +12,36 @@ package minigames.tsp
 		protected var pointInteractionPriority:int;
 		
 		public var interactable:IInteractable;
-		public var workingPoint:Node;/*
-		public var nearestInteractiblePoint:Node;
-		public var nearestInteractibleEdge:Node;*/
+		public var workingPoint:Node;
 		public var model:TSPModel;
 		public var edges:Vector.<Edge>;
-		protected var solutionLength:Number;
-		protected var solutionUpToDate:Boolean;
-		protected var _solution:Vector.<Node>;
-		protected var _errorMessage:String;
+		public var solution:TSPSolution;
+		public var ignoreNextSolutionChange:Boolean;
 		
 		public function BaseInteraction(model:TSPModel) 
 		{
 			this.model = model;
 			edges = new Vector.<Edge>();
+			solution = new TSPSolution(model);
+			solution.onChange = onSolutionChange;
 		}
 		
+		protected function onSolutionChange():void 
+		{
+			if (ignoreNextSolutionChange)
+			{
+				ignoreNextSolutionChange = false;
+				return;
+			}
+			edges = solution.toEdges();
+		}
+		
+		protected function edgesToSolutionWithoutUpdate():void
+		{
+			ignoreNextSolutionChange = true;
+			solution.fromEdges(edges);
+		}
+		/*
 		public function get solution():Vector.<Node>
 		{
 			if (!solutionUpToDate)
@@ -63,6 +77,9 @@ package minigames.tsp
 			}			
 			return _solution;
 		}
+		*/
+		
+		
 		
 		public function addEdge(p1:Node, p2:Node):Edge 
 		{			
@@ -72,7 +89,6 @@ package minigames.tsp
 				{
 					var edge:Edge = new Edge(p1, p2);
 					edges.push(edge);
-					solutionUpToDate = false;
 					return edge;
 				}
 			}
@@ -90,13 +106,12 @@ package minigames.tsp
 		}
 		
 		public function getFeedback():String 
-		{			
+		{			/*
 			var sol:Vector.<Node> = solution;
 			if (!sol)
 				return _errorMessage;
-				
-			var length:Number = model.getLength(solution);			
-			return "Длинна пути: " + length.toFixed();
+				*/	
+			return "Длинна пути: " + solution.length.toFixed();
 		}
 		
 		public function updateInteractable(x:Number, y:Number):void 
@@ -167,59 +182,17 @@ package minigames.tsp
 			return bestInter;
 		}
 		
-		public function loadSolution(solution:Vector.<Node>):void
-		{			
-			edges = pointSequenceToEdges(solution);
-			solutionUpToDate = false;
-		}
-		
-		public function improveAIWith2Opt():void 
-		{
-			if (solution)
-			{
-				new TSP2OptSolver().improve(solution, model);
-				solutionLength = model.getLength(solution);
-			}
-		}
-		
 		public function loadConvexHull():void
 		{			
 			edges = getConvexHull(model.nodes);
-			solutionUpToDate = false;
-		}
-		
-		protected function pointSequenceToEdges(points:Vector.<Node>):Vector.<Edge>
-		{
-			var result:Vector.<Edge> = new Vector.<Edge>();
-			for (var i:int = 1; i < points.length; i++) 
-			{
-				result.push(new Edge(points[i - 1], points[i]));
-			}
-			result.push(new Edge(points[points.length - 1], points[0]));
-			return result;
-		}
-		
-		protected function edgesToPointSequence(points:Vector.<Edge>):Vector.<Node>
-		{
-			var result:Vector.<Node> = new Vector.<Node>();
-			var p:Node = points[0].p1;
-			var edge:Edge = points[0];
-			
-			while (result.indexOf(edge.theOtherPoint(p)) == -1)
-			{
-				result.push(p);
-				p = edge.theOtherPoint(p);
-				edge = getEdgeWithPoint(p, edge, points);
-			}
-			result.push(p);
-			return result;
+			edgesToSolutionWithoutUpdate();
 		}
 		
 		protected function getConvexHull(points:Vector.<Node>):Vector.<Edge>
 		{
 			if (points.length <= 3)
 			{
-				return 	pointSequenceToEdges(points);
+				return TSPSolution.nodesToEdges(points);
 			}
 			var edgePoint:Node = null;
 			for (var i:int = 0; i < points.length; i++) 
@@ -239,7 +212,7 @@ package minigames.tsp
 				angle = Math.atan2(nextPoint.y - thisPoint.y, nextPoint.x - thisPoint.x);
 				hullPoints.push(thisPoint);
 			}
-			return pointSequenceToEdges(hullPoints);
+			return TSPSolution.nodesToEdges(hullPoints);
 		}
 		
 		protected function findPointByCircularDirection(points:Vector.<Node>, fromPoint:Node, angle:Number, direction:int):Node 

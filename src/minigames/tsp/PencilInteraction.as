@@ -44,11 +44,11 @@ package minigames.tsp
 			}
 		}
 		
-		override public function loadSolution(solution:Vector.<Node>):void 
+		override public function addEdge(p1:Node, p2:Node):Edge 
 		{
-			super.loadSolution(solution);
-			interactable = null;
-			workingPoint = null;
+			var result:Edge = super.addEdge(p1, p2);
+			edgesToSolutionWithoutUpdate();
+			return result;
 		}
 	}
 
