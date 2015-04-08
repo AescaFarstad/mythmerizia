@@ -2,7 +2,7 @@ package
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import minigames.tsp.TSPBinder;
+	import minigames.tsp.solvers.TSPSessionManager;
 	import resources.Resources;
 
 	
@@ -25,10 +25,14 @@ package
 			S.resources.loadResources();
 			S.text = S.resources.text;			
 			S.format = S.resources.text.format;			
+			S.pics = S.resources.pics;			
+			/*
+			
 			var binder:TSPBinder = new TSPBinder();
-			binder.start(this);
+			binder.start(this);*/
 			
-			
+			var tsp:TSPSessionManager = new TSPSessionManager();
+			tsp.init(this);
 		}
 
 	}

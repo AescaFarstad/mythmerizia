@@ -2,6 +2,7 @@ package minigames.tsp.view
 {
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import minigames.tsp.BaseInteraction;
 	import minigames.tsp.Edge;
@@ -29,10 +30,21 @@ package minigames.tsp.view
 		{
 			renderCounter++;
 			
+			var mins:Point = new Point(800, 600);
+			var maxs:Point = new Point(0, 0);
+			
+			for (var j:int = 0; j < model.nodes.length; j++) 
+			{
+				mins.x = Math.min(model.nodes[j].x, mins.x);
+				mins.y = Math.min(model.nodes[j].y, mins.y);
+				maxs.x = Math.max(model.nodes[j].x, maxs.x);
+				maxs.y = Math.max(model.nodes[j].y, maxs.y);
+			}
+			
 			graphics.clear();
 			graphics.lineStyle(1, 0, 0);
 			graphics.beginFill(0x000000, 0);
-			graphics.drawRect(0, 0, 800, 600 - x);
+			graphics.drawRect(mins.x, mins.y, maxs.x - mins.x, maxs.y - mins.y);
 			graphics.endFill();
 			
 			if (showLabels)

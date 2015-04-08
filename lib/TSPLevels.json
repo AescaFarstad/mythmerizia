@@ -1,0 +1,29 @@
+{
+"levels":[
+	{
+		"order":1,
+		"points":20,
+		"poissonFactor":2
+	},
+	{
+		"order":2,
+		"points":25,
+		"poissonFactor":2
+	},
+	{
+		"order":3,
+		"points":30,
+		"poissonFactor":3
+	},
+	{
+		"order":4,
+		"points":40,
+		"poissonFactor":3
+	},
+	{
+		"order":5,
+		"points":50,
+		"poissonFactor":3
+	}
+]
+}

@@ -31,6 +31,15 @@ package components
 			fd = new FontDescription("Jura", "normal", "normal", FontLookup.EMBEDDED_CFF);
 			fonts["edge"] = ( { font:fd, color:0x333333 } );
 			//------------------------------------------------------------------------------
+			fd = new FontDescription("nobile", "normal", "normal", FontLookup.EMBEDDED_CFF);
+			fonts["main"] = ( { font:fd, color:0x555555 } );
+			//------------------------------------------------------------------------------
+			fd = new FontDescription("nobile", "normal", "normal", FontLookup.EMBEDDED_CFF);
+			fonts["white"] = ( { font:fd, color:0xffffff } );
+			//------------------------------------------------------------------------------
+			fd = new FontDescription("nobile", "normal", "normal", FontLookup.EMBEDDED_CFF);
+			fonts["dimmain"] = ( { font:fd, color:0xaaaaaa } );
+			//------------------------------------------------------------------------------
 		}
 		
 		public static function getFontsDictionary():Dictionary

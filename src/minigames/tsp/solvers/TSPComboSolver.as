@@ -41,25 +41,26 @@ package minigames.tsp.solvers
 			this.model = model;
 			var numRestarts:int = 4;
 			var num2Opts:int = 3;
+			var tmpSolution:Vector.<Node> = initWithRandom(model);
 			var bestSolution:Vector.<Node>;
 			var bestDistance:Number = Number.POSITIVE_INFINITY;
 			for (var i:int = 0; i < numRestarts; i++) 
 			{
 				//trace("============= RESTART =================");
-				HMath.shuffleList(solution);
+				HMath.shuffleList(tmpSolution);
 				for (var j:int = 0; j < num2Opts; j++) 
 				{
-					new TSP2OptSolver().improve(solution, model);
+					new TSP2OptSolver().improve(tmpSolution, model);
 				}
-				var distance:Number = TSPSolution.getSolutionLength(solution);
+				var distance:Number = TSPSolution.getSolutionLength(tmpSolution);
 				if (distance < bestDistance)
 				{
 					bestDistance = distance;
-					bestSolution = solution;
+					bestSolution = tmpSolution.slice();
 				}
 				//trace("dist =", distance.toFixed());
 			}
-			for (var k:int = 0; k < solution.length; k++) 
+			for (var k:int = 0; k < bestSolution.length; k++) 
 			{
 				solution[k] = bestSolution[k];
 			}

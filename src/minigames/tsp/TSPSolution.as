@@ -54,6 +54,9 @@ package minigames.tsp
 		public static function edgesToNodes(edges:Vector.<Edge>):Vector.<Node>
 		{
 			var result:Vector.<Node> = new Vector.<Node>();
+			if (edges.length == 0)
+				return result;
+				
 			var p:Node = edges[0].p1;
 			var edge:Edge = edges[0];
 			
@@ -104,6 +107,11 @@ package minigames.tsp
 				arr.push(vec[i].index);
 			}
 			return arr.join(", ");
+		}
+		
+		public function isValid():Boolean 
+		{
+			return vec.length == model.nodes.length;
 		}
 	}
 

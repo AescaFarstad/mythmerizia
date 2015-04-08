@@ -4,6 +4,10 @@
 	import flash.events.IEventDispatcher;
 	public class Resources extends Folder implements IEventDispatcher
 	{
+		public var pics:r_pics_5503ab = new r_pics_5503ab();
+		
+		public var bin:r_bin_02f51d = new r_bin_02f51d();
+		
 		public var text:r_text_c2f11b = new r_text_c2f11b();
 		
 		public function Resources() 

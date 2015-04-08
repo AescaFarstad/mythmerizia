@@ -260,6 +260,11 @@ package minigames.tsp
 			return result;
 		}
 		
+		public function clearSolution():void 
+		{
+			solution.fromEdges(new Vector.<Edge>());
+		}
+		
 	}
 
 }

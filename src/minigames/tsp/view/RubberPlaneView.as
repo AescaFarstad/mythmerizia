@@ -1,6 +1,7 @@
 package minigames.tsp.view 
 {
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import minigames.tsp.BaseInteraction;
 	import minigames.tsp.Node;
 	import minigames.tsp.RubberInteraction;
@@ -25,7 +26,7 @@ package minigames.tsp.view
 			{
 				var radius:int;
 				var color:uint;
-				var hasEdges:Boolean = interaction.getEdgeWithPoint(model.nodes[i]);
+				var hasEdges:Boolean = interaction.getEdgeWithPoint(model.nodes[i]) != null;
 				if (interaction.interactable == model.nodes[i] && hasEdges)
 				{
 					var node:Node = interaction.interactable as Node;
@@ -33,10 +34,10 @@ package minigames.tsp.view
 					color = 0xff0000;
 					var topCorner:Point = new Point(node.x - radius / Math.SQRT2, node.y - radius / Math.SQRT2);
 					graphics.lineStyle(3, color, 1);
-					graphics.moveTo(topCorner.x, topCorner.y);
-					graphics.lineTo(topCorner.x + radius * 2, topCorner.y + radius * 2);
-					graphics.moveTo(topCorner.x, topCorner.y + radius * 2);
-					graphics.lineTo(topCorner.x + radius * 2, topCorner.y);
+					graphics.moveTo(topCorner.x - 2, topCorner.y - 2);
+					graphics.lineTo(topCorner.x - 2 + radius * 2, topCorner.y - 2 + radius * 2);
+					graphics.moveTo(topCorner.x - 2, topCorner.y - 2 + radius * 2);
+					graphics.lineTo(topCorner.x - 2 + radius * 2, topCorner.y - 2);
 					graphics.lineStyle(0, color, 0);
 					continue;
 				}
@@ -141,7 +142,12 @@ package minigames.tsp.view
 				graphics.drawCircle(interaction.intersectionPoint.x, interaction.intersectionPoint.y, 3);
 				graphics.endFill();
 			}*/
-			
+			/*
+			var bounds:Rectangle = getBounds(this);
+			graphics.beginFill(0x0, 0.4);
+			graphics.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			graphics.endFill();
+			trace(bounds.x, bounds.y, bounds.width, bounds.height);*/
 		}
 	}
 

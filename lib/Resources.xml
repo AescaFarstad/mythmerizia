@@ -25,7 +25,17 @@
         <edge type="localText" id="b0d3c2">
           <translation index="0">&lt;#edge#{$fontSize}#:</translation>
         </edge>
+        <main type="localText" id="d90bd3">
+          <translation index="0">&lt;#main#{$fontSize}#:</translation>
+        </main>
       </format>
     </text>
+    <bin type="folder" id="02f51d">
+      <TSPLevels type="binary" id="9cea85" path="\TSPLevels.json" />
+    </bin>
+    <pics type="folder" id="5503ab">
+      <emptyStar type="image" id="c8d488" path="\pics\emptyStar.png" />
+      <filledStar type="image" id="ae7be3" path="\pics\filledStar.png" />
+    </pics>
   </Resources>
 </Content>
