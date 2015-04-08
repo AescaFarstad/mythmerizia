@@ -6,13 +6,14 @@ package minigames.tsp.view
 	import flash.events.MouseEvent;
 	import minigames.tsp.TSPGameManager;
 	import minigames.tsp.TSPPlayerData;
+	import util.DebugRug;
 	
 	
 	public class TSPMenu extends Sprite 
 	{
 		private var playerData:TSPPlayerData;
 		private var game:TSPGameManager;
-		private var buttons:Vector.<TextButton>;
+		private var buttons:Vector.<LevelPlate>;
 		
 		public function TSPMenu() 
 		{
@@ -24,39 +25,44 @@ package minigames.tsp.view
 		{
 			this.game = game;
 			this.playerData = playerData;
-			
+			buttons = new Vector.<LevelPlate>();
+			for (var i:int = 0; i < playerData.data.length; i++) 
+			{
+				var button:LevelPlate = new LevelPlate();
+				button.load(playerData.data[i], playerData);
+				addChild(button);
+				if (i < 6)
+				{
+					button.y = i * 110 + 40;
+					button.x = 20;
+				}
+				else
+				{
+					button.y = (i - 6) * 110 + 20;
+					button.x = 320;
+				}
+				buttons.push(button);
+				button.addEventListener(MouseEvent.CLICK, onButtonClick);
+			}
 		}
 		
 		public function load():void
 		{
-			buttons = new Vector.<TextButton>();
 			for (var i:int = 0; i < playerData.data.length; i++) 
 			{
-				var button:TextButton = new TextButton(50, 30, playerData.data[i].points + " (" + playerData.data[i].score +  ")", 
-														"edge", 20, onButtonClick);
-				addChild(button);
-				button.x = i * 100;
-				buttons.push(button);
+				buttons[i].load(playerData.data[i], playerData);
 			}
+			visible = true;
 		}
 		
-		private function onButtonClick(button:TextButton):void 
+		private function onButtonClick(e:MouseEvent):void 
 		{
-			var index:int = buttons.indexOf(button);
-			clear();
-			game.load(this, index, load);
-		}
-		
-		private function clear():void 
-		{
-			if (!buttons)
-				return;
-			for (var i:int = 0; i < buttons.length; i++) 
+			var index:int = buttons.indexOf(e.currentTarget);
+			if (playerData.data[index].requires <= playerData.totalStars)
 			{
-				buttons[i].cleanUp();
-				removeChild(buttons[i]);
+				game.load(parent, index, load);
+				visible = false;				
 			}
-			buttons = null;
 		}
 	}
 

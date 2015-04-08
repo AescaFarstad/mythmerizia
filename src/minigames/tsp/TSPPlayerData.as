@@ -18,6 +18,9 @@ package minigames.tsp
 				levelData.order = rawData.levels[i].order;
 				levelData.points = rawData.levels[i].points;
 				levelData.poissonFactor = rawData.levels[i].poissonFactor;
+				levelData.discoveredAt = rawData.levels[i].discoveredAt;
+				levelData.requires = rawData.levels[i].requires;
+				levelData.name = rawData.levels[i].name;
 				data.push(levelData);
 			}
 			data.sort(sortOnOrder);
@@ -49,6 +52,16 @@ package minigames.tsp
 			{
 				data[i].score = Math.max(Math.min(3, Number(parts[i])), 0);
 			}
+		}
+		
+		public function get totalStars():int
+		{
+			var count:int = 0;
+			for (var i:int = 0; i < data.length; i++) 
+			{
+				count += data[i].score;
+			}
+			return count;
 		}
 		
 	}

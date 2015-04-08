@@ -1,13 +1,14 @@
 package minigames.tsp 
 {
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import minigames.tsp.solvers.ITSPSolver;
 	
-	public class TSPSolution 
+	public class TSPSolution extends EventDispatcher
 	{
 		private var model:TSPModel;
 		private var _length:Number;
 		public var vec:Vector.<Node> = new Vector.<Node>();
-		public var onChange:Function;
 		
 		public function TSPSolution(model:TSPModel) 
 		{
@@ -24,8 +25,7 @@ package minigames.tsp
 		private function dispatchChange():void 
 		{
 			_length = getSolutionLength(vec);
-			if (onChange != null)
-				onChange();			
+			dispatchEvent(new Event(Event.CHANGE));		
 		}
 		
 		public static function getSolutionLength(solution:Vector.<Node>):Number 
@@ -97,7 +97,7 @@ package minigames.tsp
 			return result;
 		}
 		
-		public function toString():String
+		override public function toString():String
 		{
 			var arr:Array = [];
 			for (var i:int = 0; i < vec.length; i++) 

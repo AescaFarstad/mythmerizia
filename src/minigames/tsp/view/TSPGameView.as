@@ -43,6 +43,8 @@ package minigames.tsp.view
 		private var length2Lable:SimpleLabel;
 		private var length3Lable:SimpleLabel;
 		
+		private var feedbackLabel:SimpleLabel;
+		
 		private var stars1:StarLabel;
 		private var stars2:StarLabel;
 		private var stars3:StarLabel;
@@ -130,6 +132,12 @@ package minigames.tsp.view
 			scoreSprite.addChild(stars3);
 			stars3.x = length3Lable.x - stars3.width - 5;
 			stars3.y = length3Lable.y - 5;
+			
+			feedbackLabel = new SimpleLabel(Label.CENTER_Align);
+			addChild(feedbackLabel);
+			feedbackLabel.x = 675;
+			feedbackLabel.y = 270;
+			feedbackLabel.format = "main#14";
 		}
 		
 		public function load(model:TSPModel, interaction:BaseInteraction, aiInteraction:AIInteraction, manager:TSPGameManager):void 
@@ -143,6 +151,13 @@ package minigames.tsp.view
 			planeView.x = 20;
 			planeView.y = 20;
 			planeView.render();
+			feedbackLabel.text = "";
+			interaction.solution.addEventListener(Event.CHANGE, onSolutionChanged);
+		}
+		
+		private function onSolutionChanged(e:Event):void 
+		{			
+			feedbackLabel.text = "";
 		}
 		
 		public function refreshPoints():void
@@ -164,12 +179,17 @@ package minigames.tsp.view
 		
 		public function clear():void 
 		{
+			interaction.solution.removeEventListener(Event.CHANGE, onSolutionChanged);
 			removeChild(planeView);
 			planeView = null;
 		}
 		
 		private function onSubmitClick(...params):void 
 		{
+			if (!interaction.solution.isValid())
+			{				
+				feedbackLabel.text = "All points must be connected!";
+			}
 			manager.submit();
 		}
 		

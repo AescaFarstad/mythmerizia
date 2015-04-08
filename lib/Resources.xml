@@ -28,6 +28,9 @@
         <main type="localText" id="d90bd3">
           <translation index="0">&lt;#main#{$fontSize}#:</translation>
         </main>
+        <white type="localText" id="77da3c">
+          <translation index="0">&lt;#white#{$fontSize}#:</translation>
+        </white>
       </format>
     </text>
     <bin type="folder" id="02f51d">

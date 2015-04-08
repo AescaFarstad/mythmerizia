@@ -1,26 +1,41 @@
 {
 "levels":[
 	{
+		"name":"First level",
+		"requires":0,
+		"discoveredAt":0,
 		"order":1,
 		"points":20,
 		"poissonFactor":2
 	},
 	{
+		"name":"Slightly harder level",
+		"requires":0,
+		"discoveredAt":0,
 		"order":2,
 		"points":25,
 		"poissonFactor":2
 	},
 	{
+		"name":"Moderetly harder level",
+		"requires":0,
+		"discoveredAt":0,
 		"order":3,
 		"points":30,
 		"poissonFactor":3
 	},
 	{
+		"name":"Level with a lot of points",
+		"requires":2,
+		"discoveredAt":0,
 		"order":4,
 		"points":40,
 		"poissonFactor":3
 	},
 	{
+		"name":"Level with even more points",
+		"requires":4,
+		"discoveredAt":0,
 		"order":5,
 		"points":50,
 		"poissonFactor":3

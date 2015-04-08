@@ -8,6 +8,21 @@
 		}
 			
 		/**
+		* 0: &lt;#white#{$fontSize}#:
+		*
+		*/
+		public function white(fontSize_Var:Object):String
+		{
+			var locale:int = __settings.localeIndex;
+			switch(locale)
+			{
+				case 0:
+					return "<#white#" + fontSize_Var.toString() + "#:";
+			}
+			return "Resource not found";
+		}
+		
+		/**
 		* 0: &lt;#main#{$fontSize}#:
 		*
 		*/

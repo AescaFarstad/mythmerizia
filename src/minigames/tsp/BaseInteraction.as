@@ -1,5 +1,6 @@
 package minigames.tsp
 {
+	import flash.events.Event;
 	import flash.geom.Point;
 	import minigames.tsp.solvers.TSP2OptSolver;
 	import mx.core.EdgeMetrics;
@@ -23,10 +24,10 @@ package minigames.tsp
 			this.model = model;
 			edges = new Vector.<Edge>();
 			solution = new TSPSolution(model);
-			solution.onChange = onSolutionChange;
+			solution.addEventListener(Event.CHANGE, onSolutionChange);
 		}
 		
-		protected function onSolutionChange():void 
+		protected function onSolutionChange(...params):void 
 		{
 			if (ignoreNextSolutionChange)
 			{
