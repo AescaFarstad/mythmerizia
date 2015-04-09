@@ -6,6 +6,7 @@ package minigames.tsp
 	import flash.events.MouseEvent;
 	import minigames.tsp.solvers.TSP3OptSolver;
 	import minigames.tsp.solvers.TSPComboSolver;
+	import minigames.tsp.solvers.TSPSimpleSolver;
 	import minigames.tsp.view.TSPGameView;
 	import minigames.tsp.view.TSPMenu;
 	import util.DebugRug;
@@ -83,22 +84,21 @@ package minigames.tsp
 		
 		private function onKeyDown(e:KeyboardEvent):void 
 		{
-			/*
+			
 			if (e.keyCode == 13)
 			{
-				model.init(25, 3, 500, 400);
-				interaction = new RubberInteraction(model);
-				interaction.loadConvexHull();
-				aiSolution = new AISolution(model);
-				aiSolution.improve(new TSPComboSolver());
 			}
-			if (e.keyCode == 32)
+			else if (e.keyCode == 32)
 			{
-				interaction.solution.improve(new TSP2OptSolver());
-				interaction.solution.improve(new TSP3OptSolver());
-				//interaction.loadSolution(aiInteraction.solution);
 			}
-			*/
+			else if (e.keyCode == 49)
+			{
+				interaction.solution.improve(new TSPSimpleSolver());
+			}
+			else
+			{
+				trace(e.keyCode);
+			}
 		}
 		
 		private function onFrame(e:Event):void 

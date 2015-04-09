@@ -25,7 +25,7 @@ package minigames.tsp
 		private function dispatchChange():void 
 		{
 			_length = getSolutionLength(vec);
-			dispatchEvent(new Event(Event.CHANGE));		
+			dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		public static function getSolutionLength(solution:Vector.<Node>):Number 
