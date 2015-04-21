@@ -25,10 +25,10 @@ package minigames.tsp
 			pointInteractionPriority = 4;
 		}
 		
-		override public function updateInteractable(x:Number, y:Number):void 
+		override public function updateInteractable(x:Number, y:Number, timePassed:int):void 
 		{
 			if (!dragNode)
-				super.updateInteractable(x, y);
+				super.updateInteractable(x, y, timePassed);
 			else
 			{
 				dragNode.x = x;

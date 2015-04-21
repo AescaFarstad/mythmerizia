@@ -48,7 +48,7 @@ package minigames.tsp.view
 			if (levelData.requires <= playerData.totalStars)
 			{
 				requirementLabel.text = "";
-				stars.setStars(3, levelData.score);
+				stars.setStars(levelData.score == 0 ? 0 : 3, levelData.score);
 				stars.x = 0;
 				var alpha:Number = 0.6;
 			}

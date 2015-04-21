@@ -4,6 +4,8 @@ package minigames.tsp
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import flash.utils.getTimer;
 	import minigames.tsp.solvers.TSP3OptSolver;
 	import minigames.tsp.solvers.TSPComboSolver;
 	import minigames.tsp.solvers.TSPSimpleSolver;
@@ -28,6 +30,8 @@ package minigames.tsp
 		private var interaction:BaseInteraction;
 		private var aiInteraction:AIInteraction;
 		private var view:TSPGameView;
+		
+		private var lastTimeStamp:int;
 		
 		public function TSPGameManager() 
 		{
@@ -70,6 +74,7 @@ package minigames.tsp
 			parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			view.planeView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			view.planeView.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			lastTimeStamp = getTimer();
 		}
 		
 		private function onMouseUp(e:MouseEvent):void 
@@ -103,8 +108,12 @@ package minigames.tsp
 		
 		private function onFrame(e:Event):void 
 		{
-			interaction.updateInteractable(view.planeView.mouseX, view.planeView.mouseY);			
-			view.update();
+			var newStamp:int = getTimer();
+			
+			interaction.updateInteractable(view.planeView.mouseX, view.planeView.mouseY, newStamp - lastTimeStamp);
+			if (view)
+				view.update(newStamp - lastTimeStamp);
+			lastTimeStamp = newStamp;
 		}
 		
 		public function regenerate():void
@@ -127,8 +136,21 @@ package minigames.tsp
 		{
 			if (interaction.solution.isValid())
 			{
+				var solutionVec:Vector.<Node> = interaction.solution.vec.slice();
+				var lngth:int = interaction.solution.length;
+				interaction = new TransInteraction(model, interaction.solution, aiInteraction.solution, onTransInteractionDone);
+				view.clear();
+				view.load(model, interaction, aiInteraction, this);
+				view.blockButtons();
+				/*
 				onSubmit(aiInteraction.grade(interaction.solution.length), levelIndex);
-				clear();				
+				clear();*/			
+			}
+			
+			function onTransInteractionDone():void
+			{
+				onSubmit(aiInteraction.grade(lngth), levelIndex);
+				clear();
 			}
 		}
 		
@@ -140,6 +162,7 @@ package minigames.tsp
 			view.planeView.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			parent.removeChild(view);
 			view.clear();
+			view = null;
 		}
 		
 		

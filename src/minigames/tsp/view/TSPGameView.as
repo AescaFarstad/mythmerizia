@@ -14,6 +14,7 @@ package minigames.tsp.view
 	import minigames.tsp.BaseInteraction;
 	import minigames.tsp.PencilInteraction;
 	import minigames.tsp.RubberInteraction;
+	import minigames.tsp.TransInteraction;
 	import minigames.tsp.TSPGameManager;
 	import minigames.tsp.TSPModel;
 	import minigames.tsp.view.BasePlaneView;
@@ -54,7 +55,7 @@ package minigames.tsp.view
 			super();
 		}
 		
-		public function update():void 
+		public function update(timePassed:int):void 
 		{
 			planeView.render();
 			if (aiView)
@@ -153,6 +154,7 @@ package minigames.tsp.view
 			planeView.render();
 			feedbackLabel.text = "";
 			interaction.solution.addEventListener(Event.CHANGE, onSolutionChanged);
+			
 		}
 		
 		private function onSolutionChanged(e:Event):void 
@@ -170,7 +172,8 @@ package minigames.tsp.view
 			length2Lable.format = validLength <= points[1] ? "dimmain#20" : "main#20";
 			length3Lable.text = points[2].toFixed();                      
 			length3Lable.format = validLength <= points[2] ? "dimmain#20" : "main#20";
-			lengthLable.text = interaction.solution.length.toFixed();
+			var solutionLength:int = interaction.solution.length;
+			lengthLable.text = Math.floor(validLength).toFixed();
 			
 			stars1.setStars(1, validLength <= points[0] ? 1 : 0);
 			stars2.setStars(2, validLength <= points[1] ? 2 : 0);
@@ -179,9 +182,19 @@ package minigames.tsp.view
 		
 		public function clear():void 
 		{
+			regenerateButton.enabled = true;
+			revertButton.enabled = true;
+			submitButton.enabled = true;
 			interaction.solution.removeEventListener(Event.CHANGE, onSolutionChanged);
 			removeChild(planeView);
 			planeView = null;
+		}
+		
+		public function blockButtons():void 
+		{
+			regenerateButton.enabled = false;
+			revertButton.enabled = false;
+			submitButton.enabled = false;
 		}
 		
 		private function onSubmitClick(...params):void 
@@ -209,6 +222,8 @@ package minigames.tsp.view
 				return new RubberPlaneView(interaction as RubberInteraction);
 			if (interaction is PencilInteraction)
 				return new PencilPlaneView(interaction as PencilInteraction);
+			if (interaction is TransInteraction)
+				return new TransPlaneView(interaction as TransInteraction);
 			return null;
 		}
 	}

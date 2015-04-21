@@ -115,7 +115,7 @@ package minigames.tsp
 			return "Длинна пути: " + solution.length.toFixed();
 		}
 		
-		public function updateInteractable(x:Number, y:Number):void 
+		public function updateInteractable(x:Number, y:Number, timePassed:int):void 
 		{
 			interactable = getBestInteractible(x, y);			
 		}

@@ -40,6 +40,10 @@ package minigames.tsp.view
 				maxs.x = Math.max(model.nodes[j].x, maxs.x);
 				maxs.y = Math.max(model.nodes[j].y, maxs.y);
 			}
+			maxs.y += 20;
+			maxs.x += 20;
+			mins.x -= 20;
+			mins.y -= 20;
 			
 			graphics.clear();
 			graphics.lineStyle(1, 0, 0);

@@ -99,12 +99,19 @@ package minigames.tsp
 		
 		override public function toString():String
 		{
+			var unitLength:int = Math.log(vec.length - 1) / Math.log(10);
 			var arr:Array = [];
 			for (var i:int = 0; i < vec.length; i++) 
 			{
 				if (i % 10 == 9)
-					arr.push(" | ");
-				arr.push(vec[i].index);
+					arr.push("_");
+				var length:int = vec[i].index == 0 ? 0 : (Math.log(vec[i].index) / Math.log(10));
+				var str:String = vec[i].index.toString();
+				for (var j:int = 0; j < unitLength - length; j++) 
+				{
+					str = " " + str;
+				}
+				arr.push(str);
 			}
 			return arr.join(", ");
 		}
@@ -112,6 +119,18 @@ package minigames.tsp
 		public function isValid():Boolean 
 		{
 			return vec.length == model.nodes.length;
+		}
+		
+		public function fromSolution(solution:TSPSolution):void 
+		{
+			vec = solution.vec.slice();
+			dispatchChange();
+		}
+		
+		public function fromVec(vec:Vector.<Node>):void 
+		{
+			this.vec = vec.slice();
+			dispatchChange();
 		}
 	}
 
