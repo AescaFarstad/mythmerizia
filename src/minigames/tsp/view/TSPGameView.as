@@ -4,6 +4,8 @@ package minigames.tsp.view
 	import components.Label;
 	import components.SimpleLabel;
 	import components.TextButton;
+	import engine.AnimUpdater;
+	import engine.TimeLineManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -20,7 +22,7 @@ package minigames.tsp.view
 	import minigames.tsp.view.BasePlaneView;
 	import util.Button;
 	
-	public class TSPGameView extends Sprite 
+	public class TSPGameView extends TSPCoreGameView 
 	{
 		private const PADDING:int = 20;
 		
@@ -57,14 +59,16 @@ package minigames.tsp.view
 		
 		public function update(timePassed:int):void 
 		{
-			planeView.render();
-			if (aiView)
-				aiView.render();
+			timeline.update(timePassed);
+			updater.update(timePassed);
+			planeView.render(timePassed);
 			refreshPoints();
 		}
 		
 		public function init():void
 		{
+			timeline = new TimeLineManager();
+			
 			regenerateButton = new GrayTextButton(120, 30, "Regenerate", "white", 16, onRegenerateClick);
 			addChild(regenerateButton);
 			regenerateButton.x = 640;
@@ -142,7 +146,7 @@ package minigames.tsp.view
 		}
 		
 		public function load(model:TSPModel, interaction:BaseInteraction, aiInteraction:AIInteraction, manager:TSPGameManager):void 
-		{
+		{			
 			this.manager = manager;
 			this.aiInteraction = aiInteraction;
 			this.interaction = interaction;
@@ -151,7 +155,7 @@ package minigames.tsp.view
 			addChild(planeView);
 			planeView.x = 20;
 			planeView.y = 20;
-			planeView.render();
+			planeView.render(0);
 			feedbackLabel.text = "";
 			interaction.solution.addEventListener(Event.CHANGE, onSolutionChanged);
 			
@@ -173,15 +177,16 @@ package minigames.tsp.view
 			length3Lable.text = points[2].toFixed();                      
 			length3Lable.format = validLength <= points[2] ? "dimmain#20" : "main#20";
 			var solutionLength:int = interaction.solution.length;
-			lengthLable.text = Math.floor(validLength).toFixed();
+			lengthLable.text = Math.floor(interaction.solution.length).toFixed();
 			
 			stars1.setStars(1, validLength <= points[0] ? 1 : 0);
 			stars2.setStars(2, validLength <= points[1] ? 2 : 0);
 			stars3.setStars(3, validLength <= points[2] ? 3 : 0);
 		}
 		
-		public function clear():void 
-		{
+		override public function clear():void 
+		{			
+			super.clear();
 			regenerateButton.enabled = true;
 			revertButton.enabled = true;
 			submitButton.enabled = true;
@@ -223,7 +228,7 @@ package minigames.tsp.view
 			if (interaction is PencilInteraction)
 				return new PencilPlaneView(interaction as PencilInteraction);
 			if (interaction is TransInteraction)
-				return new TransPlaneView(interaction as TransInteraction);
+				return new TransPlaneView(interaction as TransInteraction, this);
 			return null;
 		}
 	}

@@ -1,6 +1,7 @@
 package minigames.tsp 
 {
 	import adobe.utils.CustomActions;
+	import flash.display.SWFVersion;
 	import flash.geom.Point;
 	import util.DebugRug;
 	import util.HMath;
@@ -17,6 +18,7 @@ package minigames.tsp
 		public var pairings:Vector.<Object>;
 		public var dragEdges:Vector.<Edge>;
 		public var intersectionEsists:Boolean;
+		public var intersectedEdges:Vector.<Edge>
 		//public var intersectionPoint:Point;
 		
 		public function RubberInteraction(model:TSPModel) 
@@ -27,6 +29,7 @@ package minigames.tsp
 		
 		override public function updateInteractable(x:Number, y:Number, timePassed:int):void 
 		{
+			//checkSequentialness()
 			if (!dragNode)
 				super.updateInteractable(x, y, timePassed);
 			else
@@ -42,6 +45,7 @@ package minigames.tsp
 		private function checkForIntersections():void 
 		{
 			intersectionEsists = false;
+			intersectedEdges = new Vector.<Edge>();
 			for (var i:int = 0; i < dragEdges.length; i++) 
 			{
 				for (var j:int = 0; j < edges.length; j++) 
@@ -49,11 +53,36 @@ package minigames.tsp
 					if (dragEdges[i].intersects(edges[j]))
 					{
 						intersectionEsists = true;
+						intersectedEdges.push(edges[j]);
 						//intersectionPoint = HMath.linesIntersection(dragEdges[i].p1.point, dragEdges[i].p2.point, edges[j].p1.point, edges[j].p2.point);
-						return;
+						//return;
 					}
 				}
 			}
+			//checkSequentialness();
+		}
+		
+		private function checkSequentialness():void
+		{
+			for (var k:int = 0; k < edges.length - 1; k++) 
+			{
+				if (edges[k].p2 != edges[k + 1].p1)
+				{
+					traceEdges();
+					return;
+				}
+			}
+		}
+		
+		private function traceEdges():void 
+		{
+			trace(solution.toString());
+			var str:Vector.<String> = new Vector.<String>();
+			for (var k:int = 0; k < edges.length; k++) 
+			{
+				str.push(edges[k].p1.index.toString() +"->"+ edges[k].p2.index.toString());
+			}
+			trace(str.join(", "));
 		}
 		
 		private function buildDragEdgesSkewedParabola():void 
@@ -201,7 +230,7 @@ package minigames.tsp
 				{
 					
 					var nodeBelogsToEdges:Boolean = false;
-					if (getEdgeWithPoint(innerNodes[j]))
+					if (getEdgeWithNode(innerNodes[j]))
 						continue;
 					for (var m:int = 0; m < edgeVec.length; m++) 
 					{
@@ -340,11 +369,14 @@ package minigames.tsp
 		
 		override public function mouseUp(x:Number, y:Number):void 
 		{
+			handleIntersectedEdges();
+			
 			if (phantomEdges)
 			{
 				for (var i:int = 0; i < phantomEdges.length; i++) 
 				{
-					edges.push(phantomEdges[i]);
+					//if (!phantomEdges[i].equals(interactable as Edge))
+						edges.push(phantomEdges[i]);
 				}
 			}
 			dragNode = null;
@@ -354,6 +386,78 @@ package minigames.tsp
 			intersectionEsists = false;
 			//intersectionPoint = null;
 			edgesToSolutionWithoutUpdate();
+		}
+		
+		private function handleIntersectedEdges():void 
+		{
+			if (!intersectsAdjacentEdges())
+			{/*
+				var sideNodes:Vector.<Node> = new Vector.<Node>();
+				var handledNodes:Vector.<Node> = new Vector.<Node>();
+				for (var j:int = 0; j < intersectedEdges.length; j++) 
+				{
+					checkIfSideNode(intersectedEdges[j].p1, intersectedEdges[j], sideNodes, handledNodes);
+					checkIfSideNode(intersectedEdges[j].p2, intersectedEdges[j], sideNodes, handledNodes);					
+				}
+				
+				var edgesToRemove:Vector.<Edge> = new Vector.<Edge>();*/
+				var initialEdge:Edge = interactable as Edge;
+				var fromP1:Node = initialEdge.p1;
+				var edgeP1:Edge = getEdgeWithNode(fromP1, edgeP1, edges);
+				while (intersectedEdges.indexOf(edgeP1) == -1)
+				{
+					fromP1 = edgeP1.theOtherPoint(fromP1);
+					edgeP1 = getEdgeWithNode(fromP1, edgeP1, edges);
+				}
+				var toP2:Node = initialEdge.p2;
+				var edgeP2:Node = getEdgeWithNode(toP2, edgeP2, edges);
+				while (intersectedEdges.indexOf(edgeP2) == -1)
+				{
+					toP2 = edgeP2.theOtherPoint(toP2);
+					edgeP2 = getEdgeWithNode(toP2, edgeP2, edges);
+				}
+				var deleteP:Node = fromP1;
+				
+			}
+		}
+		/*
+		private function followEdgesUtill(fromP:Node, fromEdge:Edge, condition:Function):void
+		{
+			var result:Vector.<Edge> = new Vector.<Edge>();
+			while (condition(fromEdge, fromP))
+			{
+				fromP = fromEdge.theOtherPoint(fromP);
+				fromEdge = getEdgeWithNode(fromP, fromEdge, edges);
+			}
+		}*/
+		
+		/*
+		private function checkIfSideNode(p:Node, banEdge:Edge, sideNodes:Vector.<Node>, handledNodes:Vector.<Node>):void 
+		{
+			if (handledNodes.indexOf(p) == -1)
+			{
+				var anotherEdge:Edge = getEdgeWithPoint(p, banEdge, edges);
+				if (intersectedEdges.indexOf(anotherEdge) == -1)
+					sideNodes.push(p);
+				handledNodes.push(p);
+			}
+		}*/
+		
+		private function intersectsAdjacentEdges():Boolean
+		{
+			if (intersectedEdges && intersectedEdges.length > 0)
+			{
+				var initialEdge:Edge = interactable as Edge;
+				for (var j:int = 0; j < intersectedEdges.length; j++) 
+				{
+					if (intersectedEdges[j].p1 == initialEdge.p1 || intersectedEdges[j].p1 == initialEdge.p2 ||
+						intersectedEdges[j].p2 == initialEdge.p1 || intersectedEdges[j].p2 == initialEdge.p2)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 		
 		override protected function getBestInteractible(x:Number, y:Number):IInteractable 

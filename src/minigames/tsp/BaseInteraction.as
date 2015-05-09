@@ -39,7 +39,7 @@ package minigames.tsp
 		
 		protected function edgesToSolutionWithoutUpdate():void
 		{
-			ignoreNextSolutionChange = true;
+			//ignoreNextSolutionChange = true;
 			solution.fromEdges(edges);
 		}
 		/*
@@ -130,7 +130,7 @@ package minigames.tsp
 			
 		}
 		
-		public function getEdgeWithPoint(p:Node, tabu:Edge = null, edgeVec:Vector.<Edge> = null ):Edge 
+		public function getEdgeWithNode(p:Node, tabu:Edge = null, edgeVec:Vector.<Edge> = null ):Edge 
 		{
 			edgeVec ||= edges;
 			for (var i:int = 0; i < edgeVec.length; i++) 
@@ -266,6 +266,34 @@ package minigames.tsp
 			solution.fromEdges(new Vector.<Edge>());
 		}
 		
+		public function solveBadly(quality:int = 5):void
+		{
+			var freeNodes:Vector.<Node> = new Vector.<Node>();
+			for (var i:int = 0; i < model.nodes.length; i++) 
+			{
+				if (getAllEdgesWithNode(model.nodes[i]).length == 0)
+					freeNodes.push(model.nodes[i]);
+			}
+			
+			for (i = 0; i < freeNodes.length; i++) 
+			{
+				var bestEdge:Edge;
+				var bestDistance:Number = Number.POSITIVE_INFINITY;
+				for (var j:int = 0; j < quality; j++) 
+				{
+					var edge:Edge = edges[int(edges.length * Math.random())];
+					var distance:Number = HMath.distanceFromPointToSegment(freeNodes[i].x, freeNodes[i].y, edge.p1.x, edge.p1.y, edge.p2.x, edge.p2.y);
+					if (distance < bestDistance)
+					{
+						bestDistance = distance;
+						bestEdge = bestEdge;
+					}
+				}
+				edges.splice(edges.indexOf(edge), 1);
+				edges.push(new Edge(edge.p1, freeNodes[i]));
+				edges.push(new Edge(freeNodes[i], edge.p2));
+			}
+			edgesToSolutionWithoutUpdate();
+		}		
 	}
-
 }

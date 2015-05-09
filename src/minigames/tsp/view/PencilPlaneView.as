@@ -16,9 +16,9 @@ package minigames.tsp.view
 			this.interaction = interaction;	
 		}
 		
-		override public function render():void 
+		override public function render(timePassed:int):void 
 		{
-			super.render();
+			super.render(timePassed);
 			for (var i:int = 0; i < model.nodes.length; i++) 
 			{
 				if (interaction.interactable == model.nodes[i])

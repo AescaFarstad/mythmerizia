@@ -26,7 +26,7 @@ package minigames.tsp.view
 			edgesToView = new Dictionary();
 		}
 		
-		public function render():void 
+		public function render(timePassed:int):void 
 		{
 			renderCounter++;
 			

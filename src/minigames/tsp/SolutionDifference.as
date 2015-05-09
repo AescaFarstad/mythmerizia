@@ -3,14 +3,16 @@ package minigames.tsp
 	
 	public class SolutionDifference 
 	{
+		public var index:int;
 		public var from:Vector.<Edge> = new Vector.<Edge>();
 		public var to:Vector.<Edge> = new Vector.<Edge>();
 		public var newEdges:Vector.<Edge> = new Vector.<Edge>();
 		public var solution1:TSPSolution;
 		public var solution2:TSPSolution;
 		
-		public function SolutionDifference(solution1:TSPSolution, solution2:TSPSolution, edges:Vector.<Edge>) 
+		public function SolutionDifference(solution1:TSPSolution, solution2:TSPSolution, edges:Vector.<Edge>, index:int) 
 		{
+			this.index = index;
 			this.solution2 = solution2;
 			this.solution1 = solution1;
 			var solutionVec:Vector.<Node> = solution2.vec;

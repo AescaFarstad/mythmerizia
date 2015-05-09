@@ -1,0 +1,14 @@
+hold and drag to catch an edge? or hold and drag to cut edges?
+when swapping 3 edges aling them in such a way that 2 edges turn, 1 edge slides
+
+achievements
+	reduce to triangle
+	create an intersecting adge
+	score better than AI
+	find the same solution AI did
+	connect >10 points in one go
+	cause a space distortion
+	score 3 starts on 5 levels
+	score 3 starts on 2 levels
+	complete each level
+	create a solution which is 10 or less away from 3 stars

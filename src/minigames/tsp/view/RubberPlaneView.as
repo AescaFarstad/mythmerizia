@@ -3,6 +3,7 @@ package minigames.tsp.view
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import minigames.tsp.BaseInteraction;
+	import minigames.tsp.Edge;
 	import minigames.tsp.Node;
 	import minigames.tsp.RubberInteraction;
 	import minigames.tsp.view.BasePlaneView;
@@ -10,6 +11,7 @@ package minigames.tsp.view
 	public class RubberPlaneView extends BasePlaneView 
 	{
 		private var interaction:RubberInteraction;
+		private var time:int;
 		
 		public function RubberPlaneView(interaction:BaseInteraction) 
 		{
@@ -18,15 +20,16 @@ package minigames.tsp.view
 			
 		}
 		
-		override public function render():void 
+		override public function render(timePassed:int):void 
 		{
-			super.render();
+			time+= timePassed;
+			super.render(timePassed);
 			
 			for (var i:int = 0; i < model.nodes.length; i++) 
 			{
 				var radius:int;
 				var color:uint;
-				var hasEdges:Boolean = interaction.getEdgeWithPoint(model.nodes[i]) != null;
+				var hasEdges:Boolean = interaction.getEdgeWithNode(model.nodes[i]) != null;
 				if (interaction.interactable == model.nodes[i] && hasEdges)
 				{
 					var node:Node = interaction.interactable as Node;
@@ -59,6 +62,9 @@ package minigames.tsp.view
 			//trace(interaction.edges.length);
 			for (var j:int = 0; j < interaction.edges.length; j++) 
 			{
+				if (interaction.intersectedEdges && interaction.intersectedEdges.indexOf(interaction.edges[j]) != -1/* || 
+						interaction.edges[j] == interaction.interactable as Edge && interaction.dragNode*/)
+					continue;
 				color = interaction.interactable == interaction.edges[j] ? 0x00aa00 : 0x00ff00;
 				var thickness:int = 1;
 				graphics.lineStyle(thickness, color, 1);
@@ -74,6 +80,18 @@ package minigames.tsp.view
 					graphics.lineStyle(thickness, color, 1);
 					graphics.moveTo(interaction.phantomEdges[j].p1.x, interaction.phantomEdges[j].p1.y);
 					graphics.lineTo(interaction.phantomEdges[j].p2.x, interaction.phantomEdges[j].p2.y);
+				}
+			}
+			if (interaction.intersectedEdges)
+			{
+				for (j = 0; j < interaction.intersectedEdges.length; j++) 
+				{
+					color = 0xff0000;
+					thickness = 3;
+					var lineAlpha:Number = (Math.sin(time / 500 * Math.PI * 2) + 1)/2;
+					graphics.lineStyle(thickness, color, lineAlpha);
+					graphics.moveTo(interaction.intersectedEdges[j].p1.x, interaction.intersectedEdges[j].p1.y);
+					graphics.lineTo(interaction.intersectedEdges[j].p2.x, interaction.intersectedEdges[j].p2.y);
 				}
 			}
 			/*

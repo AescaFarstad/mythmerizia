@@ -45,6 +45,11 @@ package minigames.tsp
 			return HMath.checkSegmentIntersection(p1.point, p2.point, edge.p1.point, edge.p2.point) > 0;
 		}
 		
+		public function equals(edge:Edge):Boolean 
+		{
+			return edge.p1 == p1 && edge.p2 == p2 || edge.p1 == p2 && edge.p2 == p1;
+		}
+		
 		static private function distanceFromPointToLine(px:Number, py:Number, l1x:Number, l1y:Number, l2x:Number, l2y:Number):Number 
 		{
 			if (l1x == l2x)

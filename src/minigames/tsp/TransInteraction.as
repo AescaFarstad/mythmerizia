@@ -4,14 +4,15 @@ package minigames.tsp
 	
 	public class TransInteraction extends BaseInteraction 
 	{
-		private static const UPDATE_PERIOD:int = 1000;
+		public static const UPDATE_PERIOD:int = 300;
 		
 		private var callback:Function;
 		private var lastUpdateStamp:int;
 		private var time:int;
 		private var isComplete:Boolean;
 		private var targetSolution:TSPSolution;
-		private var differences:Vector.<SolutionDifference> = new Vector.<SolutionDifference>();
+		public var differences:Vector.<SolutionDifference> = new Vector.<SolutionDifference>();
+		public var nextStepAllowed:Boolean = true;
 		
 		public function TransInteraction(model:TSPModel, solution:TSPSolution, targetSolution:TSPSolution, callback:Function) 
 		{
@@ -52,7 +53,13 @@ package minigames.tsp
 		override public function updateInteractable(x:Number, y:Number, timePassed:int):void 
 		{
 			time += timePassed;
-			if (lastUpdateStamp < time - UPDATE_PERIOD)
+			while (!isComplete)
+			{
+				update();
+			}
+			callback();
+			/*
+			if (lastUpdateStamp < time - UPDATE_PERIOD && nextStepAllowed)
 			{
 				if (isComplete)
 					callback();
@@ -60,8 +67,9 @@ package minigames.tsp
 				{
 					update();
 					lastUpdateStamp = time;
+					//nextStepAllowed = false;
 				}
-			}
+			}*/
 		}
 		
 		private function update():void 
@@ -69,33 +77,24 @@ package minigames.tsp
 			var secondSolution:TSPSolution = new TSPSolution(model);
 			var lastDifference:SolutionDifference = differences.length > 0 ? differences[differences.length - 1] : null;
 			secondSolution.fromSolution(lastDifference ? lastDifference.solution2 : solution);
-			step2Opt(secondSolution.vec, targetSolution.vec);
-			var difference:SolutionDifference = new SolutionDifference(lastDifference ? lastDifference.solution2 : solution, secondSolution, lastDifference ? lastDifference.newEdges : edges);
+			step3Opt(secondSolution.vec, targetSolution.vec);
+			var difference:SolutionDifference = new SolutionDifference(lastDifference ? lastDifference.solution2 : solution, 
+					secondSolution, lastDifference ? lastDifference.newEdges : edges, differences.length);
 			differences.push(difference);
 			
 			if (difference.to.length == 0)
 				isComplete = true;
 			//trace(secondSolution.toString());
-			edges = secondSolution.toEdges();
+			//edges = secondSolution.toEdges();
 		}
 		
 		private function step2Opt(vec1:Vector.<Node>, vec2:Vector.<Node>):void 
 		{
-			/*if (vec1[0] != vec2[0])
-			{
-				var index:int = vec2.indexOf(vec1[0]);
-				var modified:Vector.<Node> = vec2.slice(index).concat(vec2.slice(0, index));
-				for (var i:int = 0; i < modified.length; i++) 
-				{
-					vec1[i] = modified[i];
-				}
-			}*/
 			for (var i:int = 0; i < vec1.length; i++) 
 			{
 				if (vec1[i] != vec2[i])
 				{
 					var secondIndex:int = vec1.indexOf(vec2[i]);
-					//var skipReturn:Boolean = (i == 1) && (secondIndex == vec2.length - 1);
 					var modified:Vector.<Node> = vec1.slice(0, i).concat(vec1.slice(i, secondIndex + 1).reverse());
 					if (secondIndex != vec2.length -1)
 						modified = modified.concat(vec1.slice(secondIndex + 1));
@@ -103,12 +102,49 @@ package minigames.tsp
 					{
 						vec1[j] = modified[j];
 					}
-					//if (!skipReturn)
-						return;
+					return;
 				}
 			}
 		}
 		
+		private function step3Opt(vec1:Vector.<Node>, vec2:Vector.<Node>):void 
+		{
+			for (var i:int = 0; i < vec1.length; i++) 
+			{
+				if (vec1[i] != vec2[i])
+				{
+					var secondIndex:int = vec1.indexOf(vec2[i]);
+					var modified1:Vector.<Node> = vec1.slice(0, i);
+					var modified2:Vector.<Node> = vec1.slice(secondIndex);
+					var ejected:Vector.<Node> = vec1.slice(i, secondIndex);
+					if (vec2.indexOf(ejected[0]) > vec2.indexOf(ejected[ejected.length - 1]))
+						ejected = ejected.reverse();
+					var firstEjectedIndex:int = vec2.indexOf(ejected[0]);
+					for (var k:int = 0; k < modified2.length; k++) 
+					{
+						if (vec2.indexOf(modified2[k]) == firstEjectedIndex - 1)
+						{
+							var result:Vector.<Node> = modified2.slice(0, k + 1).concat(ejected);
+							if (k + 1 != modified2.length)
+								result = result.concat(modified2.slice(k + 1));
+							ejected = null;
+							break;
+						}
+					}
+					if	(!result)
+					{
+						result = modified2.concat(ejected);
+					}
+					result = modified1.concat(result);
+						
+					for (var j:int = modified1.length; j < result.length; j++) 
+					{
+						vec1[j] = result[j];
+					}
+					return;
+				}
+			}
+		}
 	}
 
 }

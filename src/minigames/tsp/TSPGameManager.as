@@ -1,17 +1,22 @@
 package minigames.tsp 
 {
+	import engine.TimeLineManager;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.utils.getTimer;
+	import minigames.tsp.solvers.TSP2OptSolver;
 	import minigames.tsp.solvers.TSP3OptSolver;
 	import minigames.tsp.solvers.TSPComboSolver;
 	import minigames.tsp.solvers.TSPSimpleSolver;
+	import minigames.tsp.view.TransPlaneView;
 	import minigames.tsp.view.TSPGameView;
 	import minigames.tsp.view.TSPMenu;
 	import util.DebugRug;
+	import util.EnterFrameEvent;
+	import util.EnterFramer;
 	
 	public class TSPGameManager 
 	{
@@ -30,8 +35,7 @@ package minigames.tsp
 		private var interaction:BaseInteraction;
 		private var aiInteraction:AIInteraction;
 		private var view:TSPGameView;
-		
-		private var lastTimeStamp:int;
+		private var timeline:TimeLineManager;
 		
 		public function TSPGameManager() 
 		{
@@ -42,6 +46,7 @@ package minigames.tsp
 		{
 			this.onSubmit = onSubmit;
 			this.playerData = playerData;
+			timeline = new TimeLineManager();
 		}
 		
 		public function load(parent:DisplayObjectContainer, levelIndex:int, onComplete:Function):void 
@@ -49,6 +54,7 @@ package minigames.tsp
 			this.parent = parent;
 			this.levelIndex = levelIndex;
 			this.onComplete = onComplete;
+			timeline.load();
 			
 			var data:LevelData = playerData.data[levelIndex];
 			
@@ -60,7 +66,9 @@ package minigames.tsp
 			aiInteraction.solution.improve(new TSP3OptSolver());
 			
 			interaction = new RubberInteraction(model);
-			interaction.loadConvexHull();
+			interaction.loadConvexHull();/*
+			interaction.solveBadly(15);
+			interaction.solution.improve(new TSP2OptSolver());*/
 			
 			if (!view)
 			{
@@ -70,11 +78,11 @@ package minigames.tsp
 			parent.addChild(view);
 			view.load(model, interaction, aiInteraction, this);
 			
-			parent.addEventListener(Event.ENTER_FRAME, onFrame);
+			//parent.addEventListener(Event.ENTER_FRAME, onFrame);
 			parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			view.planeView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			view.planeView.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			lastTimeStamp = getTimer();
+			EnterFramer.addEnterFrameUpdate(onFrame);
 		}
 		
 		private function onMouseUp(e:MouseEvent):void 
@@ -95,6 +103,7 @@ package minigames.tsp
 			}
 			else if (e.keyCode == 32)
 			{
+				(interaction as TransInteraction).nextStepAllowed = true;
 			}
 			else if (e.keyCode == 49)
 			{
@@ -106,14 +115,13 @@ package minigames.tsp
 			}
 		}
 		
-		private function onFrame(e:Event):void 
+		private function onFrame(e:EnterFrameEvent):void 
 		{
-			var newStamp:int = getTimer();
-			
-			interaction.updateInteractable(view.planeView.mouseX, view.planeView.mouseY, newStamp - lastTimeStamp);
+			timeline.update(e.timePassed);
+			if (interaction)
+				interaction.updateInteractable(view.planeView.mouseX, view.planeView.mouseY, e.timePassed);
 			if (view)
-				view.update(newStamp - lastTimeStamp);
-			lastTimeStamp = newStamp;
+				view.update(e.timePassed);
 		}
 		
 		public function regenerate():void
@@ -138,10 +146,17 @@ package minigames.tsp
 			{
 				var solutionVec:Vector.<Node> = interaction.solution.vec.slice();
 				var lngth:int = interaction.solution.length;
-				interaction = new TransInteraction(model, interaction.solution, aiInteraction.solution, onTransInteractionDone);
-				view.clear();
-				view.load(model, interaction, aiInteraction, this);
-				view.blockButtons();
+				if (int(aiInteraction.solution.length) < lngth)
+				{
+					interaction = new TransInteraction(model, interaction.solution, aiInteraction.solution, onTransInteractionDone);
+					view.clear();
+					view.load(model, interaction, aiInteraction, this);
+					view.blockButtons();					
+				}
+				else
+				{
+					goOut();
+				}
 				/*
 				onSubmit(aiInteraction.grade(interaction.solution.length), levelIndex);
 				clear();*/			
@@ -149,6 +164,11 @@ package minigames.tsp
 			
 			function onTransInteractionDone():void
 			{
+				timeline.add(2000 + TransPlaneView.EDGE_ANIM_DELAY * (interaction as TransInteraction).differences.length, goOut);
+			}
+			
+			function goOut():void
+			{				
 				onSubmit(aiInteraction.grade(lngth), levelIndex);
 				clear();
 			}
@@ -156,7 +176,10 @@ package minigames.tsp
 		
 		private function clear():void 
 		{
-			parent.removeEventListener(Event.ENTER_FRAME, onFrame);
+			EnterFramer.removeEnterFrameUpdate(onFrame);
+			timeline.clear();
+			interaction.clearSolution();
+			interaction = null;
 			parent.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			view.planeView.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			view.planeView.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
