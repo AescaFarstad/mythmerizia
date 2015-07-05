@@ -6,6 +6,7 @@ package minigames.tsp
 	{
 		private var rawData:Object;
 		public var data:Vector.<LevelData> = new Vector.<LevelData>();
+		public var tutorialComplete:Boolean;
 		
 		
 		public function TSPPlayerData() 
@@ -40,18 +41,21 @@ package minigames.tsp
 			{
 				res.push(data[i].score);
 			}
-			return res.join(",");
+			var source:Object = { res:res, tutorialComplete:tutorialComplete };
+			return JSON.stringify(source);
 		}
 		
 		public function fromString(str:String):void
 		{
 			if (!str)
 				return;
-			var parts:Array = str.split(",");
+			var source:Object = JSON.parse(str);
+			var parts:Array = source.res.split(",");
 			for (var i:int = 0; i < parts.length && i < data.length; i++) 
 			{
 				data[i].score = Math.max(Math.min(3, Number(parts[i])), 0);
 			}
+			tutorialComplete = source.tutorialComplete;
 		}
 		
 		public function get totalStars():int

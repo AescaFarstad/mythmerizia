@@ -94,6 +94,19 @@ package minigames.tsp.view
 					graphics.lineTo(interaction.intersectedEdges[j].p2.x, interaction.intersectedEdges[j].p2.y);
 				}
 			}
+			
+			if (interaction.deleteEdges)
+			{
+				for (j = 0; j < interaction.deleteEdges.length; j++) 
+				{
+					color = 0xff0000//0x4444ff;
+					thickness = 4;
+					lineAlpha = (Math.sin(time / 500 * Math.PI * 2) + 1)/2;
+					graphics.lineStyle(thickness, color, lineAlpha);
+					graphics.moveTo(interaction.deleteEdges[j].p1.x, interaction.deleteEdges[j].p1.y);
+					graphics.lineTo(interaction.deleteEdges[j].p2.x, interaction.deleteEdges[j].p2.y);
+				}
+			}
 			/*
 			if (interaction.thirdPoints)
 			{

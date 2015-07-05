@@ -39,6 +39,8 @@ package minigames.tsp.view
 		private var regenerateButton:GrayTextButton;
 		private var revertButton:GrayTextButton;
 		private var submitButton:GrayTextButton;
+		private var ctrZButton:GrayTextButton;
+		private var ctrlYButton:GrayTextButton;
 		
 		private var lengthTitleLable:SimpleLabel;
 		private var lengthLable:SimpleLabel;
@@ -63,6 +65,8 @@ package minigames.tsp.view
 			updater.update(timePassed);
 			planeView.render(timePassed);
 			refreshPoints();
+			ctrZButton.enabled = interaction.ctrlZAvailable;
+			ctrlYButton.enabled = interaction.ctrlYAvailable;
 		}
 		
 		public function init():void
@@ -83,6 +87,16 @@ package minigames.tsp.view
 			addChild(submitButton);
 			submitButton.x = 640;
 			submitButton.y = 220;
+			
+			ctrZButton = new GrayTextButton(120, 30, "Ctrl + Z", "white", 16, onCtrlZClick);
+			addChild(ctrZButton);
+			ctrZButton.x = 640;
+			ctrZButton.y = 260;
+			
+			ctrlYButton = new GrayTextButton(120, 30, "Ctrl + Y", "white", 16, onCtrlYClick);
+			addChild(ctrlYButton);
+			ctrlYButton.x = 640;
+			ctrlYButton.y = 300;
 			
 			var scoreSprite:Sprite = new Sprite();
 			scoreSprite.x = 700;
@@ -200,6 +214,16 @@ package minigames.tsp.view
 			regenerateButton.enabled = false;
 			revertButton.enabled = false;
 			submitButton.enabled = false;
+		}
+		
+		private function onCtrlZClick(...params):void 
+		{
+			interaction.ctrlZ();
+		}
+		
+		private function onCtrlYClick(...params):void 
+		{
+			interaction.ctrlY();
 		}
 		
 		private function onSubmitClick(...params):void 

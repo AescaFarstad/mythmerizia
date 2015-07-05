@@ -6,6 +6,8 @@
 	
 	public class r_pics_5503ab extends MediaFolder
 	{
+		public var clickOrCrit:r_clickOrCrit_77dc55 = new r_clickOrCrit_77dc55();
+		
 		public function r_pics_5503ab() 
 		{
 			 

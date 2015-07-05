@@ -18,6 +18,9 @@ package minigames.tsp
 		public var edges:Vector.<Edge>;
 		public var solution:TSPSolution;
 		public var ignoreNextSolutionChange:Boolean;
+		public var isLoadedChange:Boolean;
+		protected var history:Vector.<Vector.<Edge>>;
+		protected var pointInHistory:int;
 		
 		public function BaseInteraction(model:TSPModel) 
 		{
@@ -25,6 +28,8 @@ package minigames.tsp
 			edges = new Vector.<Edge>();
 			solution = new TSPSolution(model);
 			solution.addEventListener(Event.CHANGE, onSolutionChange);
+			history = new Vector.<Vector.<Edge>>();
+			pointInHistory = -1;
 		}
 		
 		protected function onSolutionChange(...params):void 
@@ -294,6 +299,49 @@ package minigames.tsp
 				edges.push(new Edge(freeNodes[i], edge.p2));
 			}
 			edgesToSolutionWithoutUpdate();
+		}
+		
+		public function save():void
+		{
+			trace("save", "point", pointInHistory, "historyLength", history.length);
+			if (pointInHistory != history.length - 1)
+			{
+				history = history.slice(0, pointInHistory);
+			}
+			var saveFile:Vector.<Edge> = edges.slice();
+			history.push(saveFile);
+			pointInHistory++;
+		}
+		
+		public function load():void
+		{
+			trace("load", "point", pointInHistory, "historyLength", history.length);
+			isLoadedChange = true;
+			edges = history[pointInHistory];
+			edgesToSolutionWithoutUpdate();
+			isLoadedChange = false;
+		}
+		
+		public function ctrlZ():void
+		{
+			pointInHistory--;
+			load();
 		}		
+		
+		public function ctrlY():void
+		{
+			pointInHistory++;
+			load();
+		}
+		
+		public function get ctrlZAvailable():Boolean
+		{
+			return pointInHistory > 0;
+		}
+		
+		public function get ctrlYAvailable():Boolean
+		{
+			return pointInHistory < history.length - 1;
+		}
 	}
 }

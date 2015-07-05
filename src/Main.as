@@ -3,8 +3,10 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import minigames.clik_or_crit.CCMain;
 	import minigames.gravnav.Gravnav;
-	import minigames.tsp.solvers.TSPSessionManager;
+	import minigames.tsp.TSPSessionManager;
+	import minigames.navgraph.NavGraphMain;
 	import resources.Resources;
 	import util.EnterFramer;
 	import util.ITimeProvider;
@@ -52,10 +54,14 @@ package
 			
 			var binder:TSPBinder = new TSPBinder();
 			binder.start(this);*/
+			addChild(new NavGraphMain());
+			return;
+			
+			addChild(new CCMain());
 			/*
 			var tsp:TSPSessionManager = new TSPSessionManager();
 			tsp.init(this);*/
-			addChild(new Gravnav());
+			/*addChild(new Gravnav());*/
 		}
 
 	}

@@ -39,6 +39,9 @@
     <pics type="folder" id="5503ab">
       <emptyStar type="image" id="c8d488" path="\pics\emptyStar.png" />
       <filledStar type="image" id="ae7be3" path="\pics\filledStar.png" />
+      <clickOrCrit type="folder" id="77dc55">
+        <upArrow type="image" id="dc1bc8" path="\pics\upArrow.png" />
+      </clickOrCrit>
     </pics>
   </Resources>
 </Content>

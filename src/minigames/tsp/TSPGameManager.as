@@ -69,6 +69,8 @@ package minigames.tsp
 			interaction.loadConvexHull();/*
 			interaction.solveBadly(15);
 			interaction.solution.improve(new TSP2OptSolver());*/
+			interaction.save();
+			interaction.solution.addEventListener(TSPSolution.LENGTH_CHANGE, onLengthChanged);
 			
 			if (!view)
 			{
@@ -83,6 +85,12 @@ package minigames.tsp
 			view.planeView.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			view.planeView.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			EnterFramer.addEnterFrameUpdate(onFrame);
+		}
+		
+		private function onLengthChanged(e:Event):void 
+		{
+			if (!interaction.isLoadedChange)
+				interaction.save();
 		}
 		
 		private function onMouseUp(e:MouseEvent):void 

@@ -6,6 +6,8 @@ package minigames.tsp
 	
 	public class TSPSolution extends EventDispatcher
 	{
+		static public const LENGTH_CHANGE:String = "lengthChange";
+		
 		private var model:TSPModel;
 		private var _length:Number;
 		public var vec:Vector.<Node> = new Vector.<Node>();
@@ -24,8 +26,13 @@ package minigames.tsp
 		
 		private function dispatchChange():void 
 		{
-			_length = getSolutionLength(vec);
+			var oldLength:int = _length;
+			_length = getSolutionLength(vec);			
 			dispatchEvent(new Event(Event.CHANGE));
+			if (_length != oldLength)
+			{
+				dispatchEvent(new Event(LENGTH_CHANGE));
+			}			
 		}
 		
 		public static function getSolutionLength(solution:Vector.<Node>):Number 

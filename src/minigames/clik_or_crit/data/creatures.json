@@ -1,0 +1,120 @@
+{
+  "heroes": [
+    {
+      "title": "bat",
+      "ai": "NPC",
+      "attributes": [
+        {
+          "name": "strength",
+          "value": 4
+        },
+        {
+          "name": "agility",
+          "value": 3
+        },
+        {
+          "name": "constitution",
+          "value": 1
+        },
+        {
+          "name": "intelect",
+          "value": 1
+        },
+        {
+          "name": "willpower",
+          "value": 1
+        }
+      ],
+      "abilities": [
+        "slash"
+      ]
+    },
+    {
+      "title": "spider",
+      "ai": "NPC",
+      "attributes": [
+        {
+          "name": "strength",
+          "value": 3
+        },
+        {
+          "name": "agility",
+          "value": 3
+        },
+        {
+          "name": "constitution",
+          "value": 1
+        },
+        {
+          "name": "intelect",
+          "value": 1
+        },
+        {
+          "name": "willpower",
+          "value": 1
+        }
+      ],
+      "abilities": [
+        "slash"
+      ]
+    },
+    {
+      "title": "rat",
+      "ai": "NPC",
+      "attributes": [
+        {
+          "name": "strength",
+          "value": 2
+        },
+        {
+          "name": "agility",
+          "value": 2
+        },
+        {
+          "name": "constitution",
+          "value": 2
+        },
+        {
+          "name": "intelect",
+          "value": 1
+        },
+        {
+          "name": "willpower",
+          "value": 1
+        }
+      ],
+      "abilities": [
+        "slash"
+      ]
+    },
+    {
+      "title": "bear",
+      "ai": "NPC",
+      "attributes": [
+        {
+          "name": "strength",
+          "value": 6
+        },
+        {
+          "name": "constitution",
+          "value": 5
+        },
+        {
+          "name": "agility",
+          "value": 2
+        },
+        {
+          "name": "intelect",
+          "value": 1
+        },
+        {
+          "name": "willpower",
+          "value": 1
+        }
+      ],
+      "abilities": [
+        "slash"
+      ]
+    }
+  ]
+}

@@ -9,7 +9,6 @@ package minigames.tsp
 	public class RubberInteraction extends BaseInteraction 
 	{
 		public var dragNode:Node;
-		public var phantomEdges:Vector.<Edge>;
 		public var sourceEdge:Edge;
 		private var rubberMaxAngle:Number = Math.PI / 5;
 		public var thirdPoints:Vector.<Point>;
@@ -19,6 +18,9 @@ package minigames.tsp
 		public var dragEdges:Vector.<Edge>;
 		public var intersectionEsists:Boolean;
 		public var intersectedEdges:Vector.<Edge>
+		public var phantomEdges:Vector.<Edge>;
+		public var deleteEdges:Vector.<Edge>;
+		public var afterDeletedEdge:Edge;
 		//public var intersectionPoint:Point;
 		
 		public function RubberInteraction(model:TSPModel) 
@@ -38,6 +40,7 @@ package minigames.tsp
 				dragNode.y = y;
 				buildDragEdgesSkewedParabola();
 				checkForIntersections();
+				handleIntersectedEdges();
 				updatePhantomEdges();
 			}
 		}
@@ -163,13 +166,13 @@ package minigames.tsp
 			{
 				phantomEdges = new <Edge>[sourceEdge];
 				return;
-			}
+			}/**/
 			var innerNodes:Vector.<Node> = findAllNodesInsidePolytop(TSPSolution.edgesToNodes(dragEdges));
 			if (innerNodes.indexOf(sourceEdge.p1) == -1)
 				innerNodes.push(sourceEdge.p1);
 			if (innerNodes.indexOf(sourceEdge.p2) == -1)
 				innerNodes.push(sourceEdge.p2);
-			for (var j:int = 0; j < edges.length; j++) 
+			/*for (var j:int = 0; j < edges.length; j++) 
 			{
 				if (edges[j].p1 != sourceEdge.p1 && edges[j].p1 != sourceEdge.p2)
 				{
@@ -190,7 +193,7 @@ package minigames.tsp
 						return;
 					}
 				}
-			}
+			}*/
 			var hull:Vector.<Edge> = getConvexHull(innerNodes);
 			for (var i:int = 0; i < hull.length; i++) 
 			{
@@ -205,6 +208,8 @@ package minigames.tsp
 			hull = subDivideEdges(subDivideEdges(hull));
 			
 			phantomEdges = hull;
+			if (afterDeletedEdge)
+				phantomEdges.push(afterDeletedEdge);
 		}
 		
 		private function subDivideEdges(edgeVec:Vector.<Edge>):Vector.<Edge> 
@@ -378,7 +383,18 @@ package minigames.tsp
 					//if (!phantomEdges[i].equals(interactable as Edge))
 						edges.push(phantomEdges[i]);
 				}
-			}
+			}/*
+			if (deleteEdges)
+			{
+				for (i = 0; i < deleteEdges.length; i++) 
+				{
+					//if (!phantomEdges[i].equals(interactable as Edge))
+						edges.splice(edges.indexOf(deleteEdges[i]), 1);
+				}
+			}*/
+			afterDeletedEdge = null;
+			deleteEdges = new Vector.<Edge>();
+			intersectedEdges = new Vector.<Edge>();
 			dragNode = null;
 			phantomEdges = null;
 			sourceEdge = null;
@@ -390,7 +406,8 @@ package minigames.tsp
 		
 		private function handleIntersectedEdges():void 
 		{
-			if (!intersectsAdjacentEdges())
+			deleteEdges = new Vector.<Edge>();
+			if (!intersectsAdjacentEdges() && intersectedEdges.length > 0)
 			{/*
 				var sideNodes:Vector.<Node> = new Vector.<Node>();
 				var handledNodes:Vector.<Node> = new Vector.<Node>();
@@ -403,21 +420,30 @@ package minigames.tsp
 				var edgesToRemove:Vector.<Edge> = new Vector.<Edge>();*/
 				var initialEdge:Edge = interactable as Edge;
 				var fromP1:Node = initialEdge.p1;
-				var edgeP1:Edge = getEdgeWithNode(fromP1, edgeP1, edges);
+				var edgeP1:Edge = getEdgeWithNode(fromP1, initialEdge, edges);
 				while (intersectedEdges.indexOf(edgeP1) == -1)
 				{
 					fromP1 = edgeP1.theOtherPoint(fromP1);
 					edgeP1 = getEdgeWithNode(fromP1, edgeP1, edges);
 				}
 				var toP2:Node = initialEdge.p2;
-				var edgeP2:Node = getEdgeWithNode(toP2, edgeP2, edges);
+				var edgeP2:Edge = getEdgeWithNode(toP2, initialEdge, edges);
 				while (intersectedEdges.indexOf(edgeP2) == -1)
 				{
 					toP2 = edgeP2.theOtherPoint(toP2);
 					edgeP2 = getEdgeWithNode(toP2, edgeP2, edges);
 				}
-				var deleteP:Node = fromP1;
-				
+				if (edgeP2 == edgeP1)
+					return;
+				afterDeletedEdge = new Edge(fromP1, toP2);
+				deleteEdges = new Vector.<Edge>();
+				while (edgeP1.theOtherPoint(fromP1) != toP2)
+				{
+					deleteEdges.push(edgeP1);
+					fromP1 = edgeP1.theOtherPoint(fromP1);
+					edgeP1 = getEdgeWithNode(fromP1, edgeP1, edges);
+				}
+				deleteEdges.push(edgeP1);
 			}
 		}
 		/*

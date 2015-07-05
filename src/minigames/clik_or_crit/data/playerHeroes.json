@@ -1,0 +1,70 @@
+{
+  "heroes": [
+    {
+      "title": "ranger",
+      "ai": "player",
+      "attributes": [
+        {
+          "name": "strength",
+          "value": 7
+        },
+        {
+          "name": "agility",
+          "value": 5
+        },
+        {
+          "name": "constitution",
+          "value": 5
+        },
+        {
+          "name": "intelect",
+          "value": 5
+        },
+        {
+          "name": "cunning",
+          "value": 3
+        },
+        {
+          "name": "willpower",
+          "value": 1
+        }
+      ],
+      "abilities": [
+        "slingshot"
+      ]
+    },
+    {
+      "title": "knight",
+      "ai": "player",
+      "attributes": [
+        {
+          "name": "strength",
+          "value": 10
+        },
+        {
+          "name": "agility",
+          "value": 2
+        },
+        {
+          "name": "constitution",
+          "value": 10
+        },
+        {
+          "name": "intelect",
+          "value": 4
+        },
+        {
+          "name": "cunning",
+          "value": 1
+        },
+        {
+          "name": "willpower",
+          "value": 5
+        }
+      ],
+      "abilities": [
+        "slash"
+      ]
+    }
+  ]
+}
