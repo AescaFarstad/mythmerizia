@@ -65,6 +65,12 @@ package minigames.clik_or_crit.data.ai
 			return null;
 		}
 		
+		public function interrupt():void 
+		{
+			if (hero.activeAbility)
+				hero.activeAbility = null;
+		}
+		
 		
 		
 	}

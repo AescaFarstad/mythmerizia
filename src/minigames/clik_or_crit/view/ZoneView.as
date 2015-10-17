@@ -32,6 +32,11 @@ package minigames.clik_or_crit.view
 			render();
 		}
 		
+		public function onRestart():void 
+		{
+			render();
+		}
+		
 		private function render():void 
 		{
 			graphics.clear();

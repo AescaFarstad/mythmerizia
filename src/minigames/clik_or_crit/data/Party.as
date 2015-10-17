@@ -26,17 +26,7 @@ package minigames.clik_or_crit.data
 			this.opponent = opponent;
 			center = new Point(source.center.x, source.center.y);
 			spread = new Point(source.spread.x, source.spread.y);
-			heroes = new Vector.<Hero>();/*
-			for (var i:int = 0; i < source.heroes.length; i++) 
-			{
-				var hero:Hero = new Hero();
-				hero.load(source.heroes[i], this);
-				var ai:BaseHeroAI = AIFactory.getAI(source.heroes[i].ai);
-				ai.load(hero, opponent);
-				hero.ai = ai;
-				addHero(hero);
-				//trace("spawned hero at", hero.location.x.toFixed(3), hero.location.y.toFixed(3), "distance", Math.sqrt(distance).toFixed(3), "hero size", Hero.SIZE);
-			}*/
+			heroes = new Vector.<Hero>();
 			isAlive = true;
 			
 			spawnPoints = new Vector.<Point>();
@@ -71,7 +61,7 @@ package minigames.clik_or_crit.data
 					break;
 				}
 			}
-			model.onHeroDied(this);
+			model.onHeroDied(this, hero);
 		}
 		
 		public function addHero(hero:Hero):void 
@@ -85,10 +75,10 @@ package minigames.clik_or_crit.data
 				distance = Number.POSITIVE_INFINITY;
 				for (var j:int = 0; j < heroes.length; j++) 
 				{
-					distance = Math.min(distance, (heroes[j].location.x - location.x) * (heroes[j].location.x - location.x) + 
-													(heroes[j].location.y - location.y) * (heroes[j].location.y - location.y));
+					distance = Math.min(distance, (heroes[j].origin.x - location.x) * (heroes[j].origin.x - location.x) + 
+													(heroes[j].origin.y - location.y) * (heroes[j].origin.y - location.y));
 					if (distance < Hero.SIZE * Hero.SIZE * 4)
-						continue;
+						break;
 				}
 			}
 			var point:Point = RMath.getItem(spawnPoints);
@@ -97,6 +87,20 @@ package minigames.clik_or_crit.data
 			hero.origin = location;
 			heroes.push(hero);
 			model.onHeroAdded(hero);
+		}
+		
+		public function interrupt():void 
+		{
+			for (var i:int = 0; i < heroes.length; i++) 
+			{
+				heroes[i].interrupt();
+			}
+		}
+		
+		public function clearAfterZone():void 
+		{
+			heroes = new Vector.<Hero>();
+			isAlive = true;
 		}
 		
 	}

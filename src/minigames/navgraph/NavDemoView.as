@@ -2,8 +2,10 @@ package minigames.navgraph
 {
 	import flash.display.Shader;
 	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.geom.Point;
 	import util.BaseAppFPSPanel;
+	import util.DebugCellPanel;
 	
 	public class NavDemoView extends NavView 
 	{
@@ -15,11 +17,22 @@ package minigames.navgraph
 			super(model);
 			var _fpsPanel:BaseAppFPSPanel = new BaseAppFPSPanel();
 			addChild(_fpsPanel);
-			_fpsPanel.setLayout(0, 0, 30, 20);
+			_fpsPanel.setLayout(0, 0, 0, 0);
 			_fpsPanel.show();
 			dynamicShape = new Shape();
 			addChild(dynamicShape);
 			
+			addEventListener(Event.ADDED_TO_STAGE, init);
+			
+		}
+		
+		private function init(e:Event):void 
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, init);
+			var _locPanel:DebugCellPanel = new DebugCellPanel();
+			addChild(_locPanel);
+			_locPanel.setLayout(50, 0, 0, 0);
+			_locPanel.show();			
 		}
 		
 		public function set demo(value:NavDemo):void

@@ -8,6 +8,51 @@
 		}
 			
 		/**
+		* 0: &lt;#black#{$fontSize}#:
+		*
+		*/
+		public function black(fontSize_Var:Object):String
+		{
+			var locale:int = __settings.localeIndex;
+			switch(locale)
+			{
+				case 0:
+					return "<#black#" + fontSize_Var.toString() + "#:";
+			}
+			return "Resource not found";
+		}
+		
+		/**
+		* 0: &lt;#blood#{$fontSize}#:
+		*
+		*/
+		public function blood(fontSize_Var:Object):String
+		{
+			var locale:int = __settings.localeIndex;
+			switch(locale)
+			{
+				case 0:
+					return "<#blood#" + fontSize_Var.toString() + "#:";
+			}
+			return "Resource not found";
+		}
+		
+		/**
+		* 0: &lt;#gold#{$fontSize}#:
+		*
+		*/
+		public function gold(fontSize_Var:Object):String
+		{
+			var locale:int = __settings.localeIndex;
+			switch(locale)
+			{
+				case 0:
+					return "<#gold#" + fontSize_Var.toString() + "#:";
+			}
+			return "Resource not found";
+		}
+		
+		/**
 		* 0: &lt;#white#{$fontSize}#:
 		*
 		*/

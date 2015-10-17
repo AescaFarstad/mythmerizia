@@ -10,7 +10,7 @@ package minigames.clik_or_crit.view
 
 	public class HeroView extends Sprite implements IHeroListener
 	{
-		private var hero:Hero;
+		public var hero:Hero;
 		private var label:Label;
 		private var healthBar:ProgressBar;
 		
@@ -33,10 +33,10 @@ package minigames.clik_or_crit.view
 			addChild(damageIndicator);
 			
 			label = new Label(Label.CENTER_Align);
-			label.text = S.format.white(15) + hero.name;
+			label.text = S.format.white(12) + hero.name;
 			addChild(label);
 			
-			healthBar = new ProgressBar(40, 8, hero.hp.maxValue, 0);
+			healthBar = new ProgressBar(35, 6, hero.hp.maxValue, 0);
 			healthBar.setStyle(0xffffdd, 0x444444, 0xff8888, 1);
 			maxHealthCache = hero.hp.maxValue;
 			healthCache = hero.hp.value;
@@ -84,10 +84,21 @@ package minigames.clik_or_crit.view
 			
 		public function onDamaged(damage:Number, from:Hero, isCrit:Boolean):void 
 		{
-			var damageLabel:DamageLabel = new DamageLabel(damage, from, hero, isCrit);			
-			mainView.addChild(damageLabel);
-			mainView.animUpdater.push(damageLabel);
+			mainView.animUpdater.push(DamageLabel.show(mainView.field, damage, from, hero, isCrit, false));
 			damageIndicator.impulse();
+		}
+		
+		public function healed(value:Number):void 
+		{
+			mainView.animUpdater.push(DamageLabel.show(mainView.field, value, null, hero, false, true));
+			//damageIndicator.impulse();
+		}
+		
+		public function cleanup():void 
+		{
+			hero.listener = null;
+			if (parent)
+				parent.removeChild(this);			
 		}
 		
 	}

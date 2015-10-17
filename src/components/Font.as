@@ -40,6 +40,15 @@ package components
 			fd = new FontDescription("nobile", "normal", "normal", FontLookup.EMBEDDED_CFF);
 			fonts["dimmain"] = ( { font:fd, color:0xaaaaaa } );
 			//------------------------------------------------------------------------------
+			fd = new FontDescription("nobile", "normal", "normal", FontLookup.EMBEDDED_CFF);
+			fonts["gold"] = ( { font:fd, color:0xcccc00 } );
+			//------------------------------------------------------------------------------
+			fd = new FontDescription("Jura", "normal", "normal", FontLookup.EMBEDDED_CFF);
+			fonts["blood"] = ( { font:fd, color:0xcc0000 } );
+			//------------------------------------------------------------------------------
+			fd = new FontDescription("nobile", "normal", "normal", FontLookup.EMBEDDED_CFF);
+			fonts["black"] = ( { font:fd, color:0x000000 } );
+			//------------------------------------------------------------------------------
 		}
 		
 		public static function getFontsDictionary():Dictionary

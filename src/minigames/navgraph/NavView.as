@@ -36,6 +36,7 @@ package minigames.navgraph
 			graphics.drawRect(0, 0, NavSpace.SIZE_X * SIZE, NavSpace.SIZE_Y * SIZE);
 			graphics.endFill();
 			var k:int;
+			var m:int;
 			
 			/*
 			var meshPadding:int = 2;			
@@ -131,7 +132,7 @@ package minigames.navgraph
 				graphics.lineTo(SIZE * model.debugPoints2[k].x, SIZE * model.debugPoints2[k].y); 
 			}
 			var m:int;
-			
+			*/
 			for (k = 0; k < model.nodes.length; k++) 
 			{
 				graphics.lineStyle(3, 0xaaaa00, 1);
@@ -148,7 +149,7 @@ package minigames.navgraph
 									SIZE * (model.nodes[k].links[m].cell.y + 0.5));
 					
 				}
-			}*/
+			}
 			/*
 			for (m = 0; m < model.debugEdges.length; m++) 
 			{

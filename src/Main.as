@@ -3,12 +3,14 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import minigames.cardamon.CardamonMain;
 	import minigames.clik_or_crit.CCMain;
 	import minigames.gravnav.Gravnav;
 	import minigames.tsp.TSPSessionManager;
 	import minigames.navgraph.NavGraphMain;
 	import resources.Resources;
 	import util.EnterFramer;
+	import util.GameInfoPanel;
 	import util.ITimeProvider;
 	import util.SimpleLogger;
 
@@ -43,25 +45,27 @@ package
 			
 			S.resources = new Resources();
 			S.resources.loadResources();
-			S.text = S.resources.text;			
+			S.text = S.resources.text;
 			S.format = S.resources.text.format;			
 			S.pics = S.resources.pics;	
 			
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
 			
-			/*
 			
-			var binder:TSPBinder = new TSPBinder();
+			
+			
+			/*var binder:TSPBinder = new TSPBinder();
 			binder.start(this);*/
-			addChild(new NavGraphMain());
-			return;
 			
-			addChild(new CCMain());
+			//addChild(new NavGraphMain());
+			/*return;*/
+			//addChild(new CardamonMain());
 			/*
 			var tsp:TSPSessionManager = new TSPSessionManager();
 			tsp.init(this);*/
-			/*addChild(new Gravnav());*/
+			/**/addChild(new Gravnav());
+			addChild(GameInfoPanel.instance);
 		}
 
 	}

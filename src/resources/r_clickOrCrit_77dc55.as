@@ -6,6 +6,10 @@
 	
 	public class r_clickOrCrit_77dc55 extends MediaFolder
 	{
+		public var gearViewItem:r_gearViewItem_72f264 = new r_gearViewItem_72f264();
+		
+		public var buttons:r_buttons_1fb14b = new r_buttons_1fb14b();
+		
 		public function r_clickOrCrit_77dc55() 
 		{
 			 

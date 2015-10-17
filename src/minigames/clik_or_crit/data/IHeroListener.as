@@ -6,6 +6,8 @@ package minigames.clik_or_crit.data
 		function onDeath():void;
 		function onDamaged(damage:Number, from:Hero, isCrit:Boolean):void;
 		
+		function healed(value:Number):void;
+		
 	}
 	
 }

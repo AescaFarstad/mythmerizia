@@ -95,6 +95,16 @@ package minigames.clik_or_crit.data
 			value+= regen * timePassed;
 			value = Math.min(value, maxValue);
 		}
+		
+		public function removeModifier(name:String):void 
+		{
+			var modifier:Modifier = modifiers[name];
+			if (modifier)
+			{
+				delete modifiers[name];
+				recalculate();				
+			}
+		}
 	}
 
 }

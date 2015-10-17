@@ -10,26 +10,28 @@ package minigames.clik_or_crit.data
 	public class Hero 
 	{
 		public static var STANDARD_COOLDOWN:int = 1000;
-		public static var SIZE:Number = 0.05;
+		public static var SIZE:Number = 0.04;
 		public static var STANDARD_SPEED:Number = 0.001;
 		public static var STANDARD_ACCEL:Number = 0.02;
 		
 		public var hp:Attribute;
+		public var damage:Attribute;
+		public var attackSpeed:Attribute;
+		public var critChance:Attribute;
+		public var critDamage:Attribute;
+		public var hpRegen:Attribute;
+		
+		public var willpower:Attribute;
+		public var cunning:Attribute;
+		public var constitution:Attribute;
 		public var strength:Attribute;
 		public var agility:Attribute;
 		public var intelect:Attribute;
-		public var damage:Attribute;
-		public var attackSpeed:Attribute;
-		public var constitution:Attribute;
-		public var critChance:Attribute;
-		public var critDamage:Attribute;
-		public var cunning:Attribute;
-		public var willpower:Attribute;
-		public var hpRegen:Attribute;
 		
 		public var isAlive:Boolean;
 		public var name:String;
 		
+		public var gear:Gear;
 		public var ai:IHeroAI;
 		public var party:Party;
 		public var target:Hero;
@@ -44,6 +46,10 @@ package minigames.clik_or_crit.data
 		public var listener:IHeroListener;
 		
 		private var attributes:Vector.<Attribute> = new Vector.<Attribute>();
+		
+		public var goldDrop:Number;
+		public var baseGoldDrop:Number;
+		
 		
 		public function Hero() 
 		{
@@ -140,11 +146,7 @@ package minigames.clik_or_crit.data
 			{
 				abilities.push(new AbilityData(AbilityFactory.getAbility(source.abilities[i]), this));
 			}
-			for (i = 0; i < attributes.length; i++) 
-			{
-				if (attributes[i].isReplenishable)
-					attributes[i].replenishFully();
-			}
+			replenish();
 			isAlive = true;
 			speed = STANDARD_SPEED;
 			startingCooldown = STANDARD_COOLDOWN * 1000 / attackSpeed.divValue;
@@ -152,6 +154,21 @@ package minigames.clik_or_crit.data
 			{
 				abilities[i].cooldown = startingCooldown;
 			}
+			baseGoldDrop = source.gold;
+			
+			gear = new Gear();
+			
+			if (party)
+				gear.load(party.model.getGearSource(name), this);
+		}
+		
+		public function replenish():void
+		{
+			for (var i:int = 0; i < attributes.length; i++) 
+			{
+				if (attributes[i].isReplenishable)
+					attributes[i].replenishFully();
+			}			
 		}
 		
 		public function update(timePassed:int):void 
@@ -188,6 +205,19 @@ package minigames.clik_or_crit.data
 					listener.onDeath();
 			}
 			return dmg;
+		}
+		
+		public function heal(value:Number):void 
+		{
+			hp.value += value;
+			hp.value = Math.min(hp.maxValue, hp.value);
+			if (listener)
+				listener.healed(value);
+		}
+		
+		public function interrupt():void 
+		{
+			ai.interrupt();
 		}
 		
 	}

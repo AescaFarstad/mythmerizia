@@ -24,8 +24,8 @@ package minigames.navgraph
 		{
 			this.view = view;
 			this.space = space;
-			var numCreepoozles:int = 300;
-			var numTargets:int = 150;
+			var numCreepoozles:int = 30;
+			var numTargets:int = 15;
 			
 			creepoozles = new Vector.<Creepoozle>()
 			for (var i:int = 0; i < numCreepoozles; i++) 

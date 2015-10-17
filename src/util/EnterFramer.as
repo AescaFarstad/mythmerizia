@@ -26,7 +26,7 @@ package util
 			return _instance ? _instance : new EnterFramer();
 		}
 		
-		///If added during the event, the listender will eb called next frame
+		///If added during the event, the listender will be called next frame
 		private function addListener(listener:Function):void
 		{
 			if (_updateInProgress)

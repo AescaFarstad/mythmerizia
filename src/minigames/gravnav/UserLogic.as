@@ -13,8 +13,6 @@ package minigames.gravnav
 		private var model:GravnavModel;
 		private var keyboard:KeyboardInput;
 		
-		private var inputCooldown:int;
-		
 		public function UserLogic() 
 		{
 			
@@ -32,8 +30,8 @@ package minigames.gravnav
 		
 		public function update(timePassed:int):void 
 		{
-			inputCooldown -= timePassed;
-			if (inputCooldown <= 0)
+			model.inputCooldown -= timePassed;
+			if (model.inputCooldown <= 0)
 			{
 				var keyPressed:Boolean = false;
 				for (var i:int = 0; i < KEYS.length; i++) 
@@ -55,18 +53,20 @@ package minigames.gravnav
 							if (model.cells[model.hero.y + DIRECTIONS[i].y][model.hero.x + DIRECTIONS[i].x])
 							{
 								var length:int = model.hero.travel(DIRECTIONS[i], model);
-								inputCooldown = COOLDOWN * length;
+								model.inputCooldown = COOLDOWN * length;
 								return;
 							}
 						}
 					}
 				}
 			}
+			if (keyboard.activeKeys[Keyboard.SPACE])
+				model.checkIsHasSolution();
 		}
 		
 		public function get isInputEnabled():Boolean
 		{
-			return inputCooldown <= 0;
+			return model.inputCooldown <= 0;
 		}
 		
 	}

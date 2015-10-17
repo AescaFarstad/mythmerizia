@@ -26,6 +26,20 @@ package util
 			return null;
 		}
 		
+		static public function shuffleList(targetList:*):void
+		{
+			var length:int = targetList.length;
+			if (length < 2)
+				return;
+			for (var i:int = 0; i < length - 1; i ++)
+			{
+				var j:int = Math.random() * (length - i) + i;
+				var temp:* = targetList[i];
+				targetList[i] = targetList[j];
+				targetList[j] = temp;
+			}
+		}
+		
 	}
 
 }

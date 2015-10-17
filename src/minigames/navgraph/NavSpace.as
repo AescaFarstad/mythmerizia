@@ -2,6 +2,7 @@ package minigames.navgraph
 {
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	import minigames.navgraph.Edge;
 	
@@ -31,18 +32,7 @@ package minigames.navgraph
 		
 		public function NavSpace()
 		{
-			restart();
-		/*
-		   var cell1:CellData = new CellData();
-		   cell1.x = 10;
-		   cell1.y = 2;
-		
-		
-		   var cell2:CellData = new CellData();
-		   cell2.x = 10;
-		   cell2.y = 12;
-		
-		 isNodeVisible(new NavNode(cell1), new NavNode(cell2), UNIT_SIZE);*/
+			restart();		
 		}
 		
 		public function restart():void
@@ -100,9 +90,109 @@ package minigames.navgraph
 		
 		public function addObstacle(x:int, y:int):void
 		{
-			cellMatrix[y][x].isObstacle = true;
+			cellMatrix[y][x].isObstacle = true;			
 			
 			refresh();
+		}
+		
+		public function addAsObstacle(rect:Rectangle):void
+		{
+			var nodesToClear:Vector.<NavNode> = new Vector.<NavNode>();
+			var recheckNodes:Vector.<NavNode> = new Vector.<NavNode>();
+			for (var i:int = 0; i < rect.width; i++) 
+			{
+				for (var j:int = 0; j < rect.height; j++) 
+				{
+					cellMatrix[j + rect.y][i + rect.x].isObstacle = true;	
+				}
+			}			
+			
+			for (i = -1; i < rect.width + 1; i++) 
+			{
+				for (j = -1; j < rect.height + 1; j++) 
+				{
+					if (cellMatrix[j + rect.y][i + rect.x].node && !isCorner(j + rect.y, i + rect.x))
+						nodesToClear.push(cellMatrix[j + rect.y][i + rect.x].node);
+				}
+			}
+			for (var k:int = 0; k < nodesToClear.length; k++) 
+			{
+				for (var l:int = 0; l < nodesToClear[k].links.length; l++) 
+				{
+					if (recheckNodes.indexOf(nodesToClear[k].links[l]) == -1)
+						recheckNodes.push(nodesToClear[k].links[l]);
+				}
+				for (var o:int = 0; o < nodesToClear[k].links.length; o++) 
+				{
+					nodesToClear[k].links[o].links.splice(nodesToClear[k].links[o].links.indexOf(nodesToClear[k]), 1);
+				}
+				nodesToClear[k].cell.node = null;
+				nodes.splice(nodes.indexOf(nodesToClear[k]), 1);
+			}
+			clearMeshes();
+			createMeshes();
+			var nodesToAdd:Vector.<NavNode> = new Vector.<NavNode>();
+			var potentialNodes:Vector.<Point> = new <Point>[new Point(rect.x - 1, rect.y - 1), new Point(rect.x + 1, rect.y - 1), 
+															new Point(rect.x + 1, rect.y + 1), new Point(rect.x - 1, rect.y + 1)];
+			for (var m:int = 0; m < potentialNodes.length; m++) 
+			{
+				if (isCorner(potentialNodes[m].y, potentialNodes[m].x) && !cellMatrix[potentialNodes[m].y][potentialNodes[m].x].node)
+				{	
+					var node:NavNode = new NavNode(cellMatrix[potentialNodes[m].y][potentialNodes[m].x]);
+					nodesToAdd.push(node);
+					cellMatrix[potentialNodes[m].y][potentialNodes[m].x].node = node;
+					for (var n:int = 0; n < nodes.length; n++) 
+					{
+						if (isDirectlyVisible(node.point, nodes[n].point, UNIT_SIZE))
+						{
+							node.links.push(nodes[n]);
+							nodes[n].links.push(node);
+						}
+					}
+					nodes.push(node);
+				}
+			}
+			clearNearestNodes();
+			floodFill();
+			
+			for (i = 0; i < recheckNodes.length; i++) 
+			{
+				for (j = 0; j < recheckNodes[i].links.length; j++) 
+				{
+					//trace("check")
+					if (!isDirectlyVisible(recheckNodes[i].point, recheckNodes[i].links[j].point, UNIT_SIZE))
+					{
+						recheckNodes[i].links[j].links.splice(recheckNodes[i].links[j].links.indexOf(recheckNodes[i]), 1);
+						recheckNodes[i].links.splice(recheckNodes[i].links.indexOf(recheckNodes[i].links[j]), 1);
+						j--;
+					}
+				}
+			}
+			
+		}/**/
+		
+		private function clearNearestNodes():void 
+		{
+			for (var i:int = 0; i < SIZE_Y; i++)
+			{
+				for (var j:int = 0; j < SIZE_X; j++)
+				{
+					cellMatrix[i][j].nearestNodes = new Vector.<NavNode>();
+				}
+			}
+		}
+		
+		private function clearMeshes():void 
+		{
+			for (var i:int = 0; i < SIZE_Y; i++)
+			{
+				for (var j:int = 0; j < SIZE_X; j++)
+				{
+					cellMatrix[i][j].mesh = null;
+					cellMatrix[i][j].meshes = new Vector.<Mesh>();
+				}
+			}
+			meshes = new Vector.<Mesh>();
 		}
 		
 		public function removeObstacle(x:int, y:int):void
@@ -622,220 +712,6 @@ package minigames.navgraph
 			return false;
 		}
 		
-		private var traceEnabled:Boolean;/*
-		private function collidesByFloatingBresenham(p1:Point, p2:Point):Boolean
-		{
-			var dx:Number = Math.abs(p2.x - p1.x);
-			var dy:Number = Math.abs(p2.y - p1.y);
-			var xCeil:Number = Math.abs(int(p1.x) + (p1.x < p2.x ? 1 : 0) - p1.x);
-			var yCeil:Number = Math.abs(int(p1.x) + (p1.y < p2.y ? 1 : 0) - p1.y);
-			
-			var intx:int = p1.x;
-			var inty:int = p1.y;
-			var targetX:int = p2.x;
-			var targetY:int = p2.y;
-			var x:Number = p1.x;
-			var y:Number = p1.y;
-			
-			while (intx != targetX || inty != targetY)
-			{
-				checkedCells.push(cellMatrix[inty][intx]);
-				if (cellMatrix[inty][intx].isObstacle)
-					return true;
-				if (dx / xCeil > dy / yCeil)
-				{
-					if (traceEnabled)
-					trace("X*", "dx, xceil:", dx.toFixed(2), xCeil.toFixed(2), (dx / xCeil).toFixed(2), ">",
-								"dy, yceil:", dy.toFixed(2), yCeil.toFixed(2), (dy / yCeil).toFixed(2));
-					dx -= Math.abs(xStep);
-					x += xStep;
-					intx = x;
-				}
-				else
-				{
-					if (traceEnabled)
-					trace("Y*", "dx, xceil:", dx.toFixed(2), xCeil.toFixed(2), (dx / xCeil).toFixed(2), "<",
-								"dy, yceil:", dy.toFixed(2), yCeil.toFixed(2), (dy / yCeil).toFixed(2));
-					dy -= Math.abs(yStep);
-					y += yStep;
-					inty = y;
-				}
-			}
-			return false;
-		}*/
-		
-		/*
-		private function thickCollides(int x0, int y0, int x1, int y1, float wd)
-		{ 
-		   int dx = abs(x1-x0), sx = x0 < x1 ? 1 : -1; 
-		   int dy = abs(y1-y0), sy = y0 < y1 ? 1 : -1; 
-		   int err = dx-dy, e2, x2, y2;                         
-		   float ed = dx+dy == 0 ? 1 : sqrt((float)dx*dx+(float)dy*dy);
-		   
-		   for (wd = (wd+1)/2; ; ) {                                   
-			  setPixelColor(x0,y0,max(0,255*(abs(err-dx+dy)/ed-wd+1));
-			  e2 = err; x2 = x0;
-			  if (2*e2 >= -dx) {                                           
-				 for (e2 += dy, y2 = y0; e2 < ed*wd && (y1 != y2 || dx > dy); e2 += dx)
-					setPixelColor(x0, y2 += sy, max(0,255*(abs(e2)/ed-wd+1));
-				 if (x0 == x1) break;
-				 e2 = err; err -= dy; x0 += sx; 
-			  } 
-			  if (2*e2 <= dy) {                                            
-				 for (e2 = dx-e2; e2 < ed*wd && (x1 != x2 || dx < dy); e2 += dy)
-					setPixelColor(x2 += sx, y0, max(0,255*(abs(e2)/ed-wd+1));
-				 if (y0 == y1) break;
-				 err += dx; y0 += sy; 
-			  }
-		   }
-		}*/
-		
-		private function DDACollides(p1:Point, p2:Point):Boolean
-		{
-			var i:int
-			var n:int;
-			
-			var a:Number;
-			var a0:Number;
-			var a1:Number;
-			var aa:Number;
-			var b:Number;
-			var d:Number;
-			var x0:Number = p1.x;
-			var x1:Number = p2.x;
-			var y0:Number = p1.y;
-			var y1:Number = p2.y;
-			
-			// end-points
-			//pnt(x0,y0,col);
-			//pnt(x1,y1,col);
-			// x-axis pixel cross
-			a0 = 1;
-			a1 = 0;
-			n = 0;
-			
-			if (x0 < x1)
-			{
-				a0 = Math.ceil(x0);
-				a1 = Math.floor(x1);
-				d = (y1 - y0) / (x1 - x0);
-				a = a0;
-				b = y0 + (a0 - x0) * d;
-				n = Math.abs(a1 - a0);
-			}
-			else if (x0 > x1)
-			{
-				a0 = Math.ceil(x1);
-				a1 = Math.floor(x0);
-				d = (y1 - y0) / (x1 - x0);
-				a = a0;
-				b = y1 + (a0 - x1) * d;
-				n = Math.abs(a1 - a0);
-			}
-			if (a0 <= a1)
-			{
-				aa = a;	
-				for (i = 0; i <= n; i++)
-				{
-					checkedCells.push(cellMatrix[int(b)][int(aa)]);
-					if (cellMatrix[int(b)][int(aa)].isObstacle)
-						return true;
-					checkedCells.push(cellMatrix[int(b)][int(a)]);
-					if (cellMatrix[int(b)][int(a)].isObstacle)
-						return true;
-					aa = a; 
-					a++; 
-					b += d;
-				}
-			}
-			// y-axis pixel cross
-			
-			a0 = 1;
-			a1 = 0;
-			n = 0;
-			
-			if (y0 < y1)
-			{
-				a0 = Math.ceil(y0);
-				a1 = Math.floor(y1);
-				d = (x1 - x0) / (y1 - y0);
-				a = a0;
-				b = x0 + (a0 - y0) * d;
-				n = Math.abs(a1 - a0);
-			}
-			else if (y0 > y1)
-			{
-				a0 = Math.ceil(y1);
-				a1 = Math.floor(y0);
-				d = (x1 - x0) / (y1 - y0);
-				a = a0;
-				b = x1 + (a0 - y1) * d;
-				n = Math.abs(a1 - a0);
-			}
-			if (a0 <= a1)
-			{		
-				aa = a;
-				for (i = 0; i <= n; i++)
-				{
-					
-					checkedCells.push(cellMatrix[int(b)][int(aa)]);
-					if (cellMatrix[int(aa)][int(b)].isObstacle)
-						return true;
-					checkedCells.push(cellMatrix[int(b)][int(a)]);
-					if (cellMatrix[int(a)][int(b)].isObstacle)
-						return true;
-					aa = a;
-					a++;
-					b += d;
-				}
-			}
-			return false;
-		}
-		
-		private function brazCollides(p1:Point, p2:Point):Boolean
-		{
-			
-			var xDist:Number = Math.abs(p2.x - p1.x);
-			var yDist:Number = -Math.abs(p2.y - p1.y);
-			var xStep:Number = (p1.x < p2.x ? +1 : -1);
-			var yStep:Number = (p1.y < p2.y ? +1 : -1);
-			var error:Number = xDist + yDist;
-			
-			var x:Number = p1.x;
-			var y:Number = p1.y;
-			var tx:int = p2.x;
-			var ty:int = p2.y;
-			var rx:int = p1.x;
-			var ry:int = p1.y;
-			
-			checkedCells.push(cellMatrix[ry][rx]);
-			if (cellMatrix[ry][rx].isObstacle)
-				return true;
-			
-			while (rx != tx || ry != ty)
-			{
-				if (2 * error - yDist > xDist - 2 * error)
-				{
-					error += yDist;
-					x += xStep;
-					rx = x;
-				}
-				else
-				{
-					error += xDist;
-					y += yStep;
-					ry = y;
-					
-				}
-				checkedCells.push(cellMatrix[ry][rx]);
-				if (cellMatrix[ry][rx].isObstacle)
-					return true;
-			}
-			checkedCells.push(cellMatrix[ry][rx]);
-			checkedCells.push(cellMatrix[ry][rx]);
-			return false;
-		}
-		
 		public function saveToString():String
 		{
 			var obj:Object = new Object();
@@ -865,9 +741,8 @@ package minigames.navgraph
 				cellMatrix[obj.obsctacles[i].y][obj.obsctacles[i].x].isObstacle = true;
 			}
 			refresh();
-			traceEnabled = true;
 		}
-		
+		/*
 		private function intersectsEdges(p1:Point, p2:Point, list:Array):Boolean
 		{
 			edgesOnChecks.push(list.length);
@@ -878,6 +753,6 @@ package minigames.navgraph
 					return true;
 			}
 			return false;
-		}
+		}*/
 	}
 }

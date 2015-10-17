@@ -7,6 +7,8 @@ package minigames.clik_or_crit.data.ai
 		function act(timePassed:int):void;
 		
 		function getHeroTarget(ability:AbilityData):Hero;
+		
+		function interrupt():void;
 	}
 	
 }

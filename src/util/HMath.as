@@ -3,21 +3,7 @@ package util
 	import flash.geom.Point;
 	
 	public class HMath 
-	{
-		static public function shuffleList(targetList:*):void
-		{
-			var length:int = targetList.length;
-			if (length < 2)
-				return;
-			for (var i:int = 0; i < length - 1; i ++)
-			{
-				var j:int = Math.random() * (length - i) + i;
-				var temp:* = targetList[i];
-				targetList[i] = targetList[j];
-				targetList[j] = temp;
-			}
-		}
-		
+	{		
 		/// (x1, y1) and (x2, y2) - base points, input - the point of interest (x3). Returns y3
 		static public function linearInterp(x1:Number, y1:Number, x2:Number, y2:Number, input:Number):Number 
 		{
@@ -128,13 +114,22 @@ package util
 		{
 			if (s11.equals(s21) || s11.equals(s22) || s12.equals(s21) || s12.equals(s22))
 				return 0;
+				
+			if (Math.min(s11.x, s12.x) > Math.max(s21.x, s22.x) || 
+				Math.min(s11.y, s12.y) > Math.max(s21.y, s22.y) ||
+				Math.min(s21.x, s22.x) > Math.max(s11.x, s12.x) ||
+				Math.min(s21.y, s22.y) > Math.max(s11.y, s12.y)
+				)
+				return -1;
+				
 			var intersectionPoint:Point = linesIntersection(s11, s12, s21, s22);
 			if (!intersectionPoint)
 				return -1;
-			var belogs:Boolean = Math.min(s11.x, s12.x) <= intersectionPoint.x &&  Math.max(s11.x,s12.x) >= intersectionPoint.x &&
-								Math.min(s11.y, s12.y) <= intersectionPoint.y &&  Math.max(s11.y,s12.y) >= intersectionPoint.y &&
-								Math.min(s21.x, s22.x) <= intersectionPoint.x &&  Math.max(s21.x,s22.x) >= intersectionPoint.x &&
-								Math.min(s21.y, s22.y) <= intersectionPoint.y &&  Math.max(s21.y,s22.y) >= intersectionPoint.y;
+			var antiError:Number = 0.0000001;
+			var belogs:Boolean = Math.min(s11.x, s12.x) - intersectionPoint.x < antiError &&  Math.max(s11.x,s12.x) - intersectionPoint.x > -antiError &&
+								Math.min(s11.y, s12.y) - intersectionPoint.y < antiError &&  Math.max(s11.y,s12.y) - intersectionPoint.y > -antiError &&
+								Math.min(s21.x, s22.x) - intersectionPoint.x < antiError &&  Math.max(s21.x,s22.x) - intersectionPoint.x > -antiError &&
+								Math.min(s21.y, s22.y) - intersectionPoint.y < antiError &&  Math.max(s21.y,s22.y) - intersectionPoint.y > -antiError;
 			return belogs ? 1 : -1;
 		}
 		

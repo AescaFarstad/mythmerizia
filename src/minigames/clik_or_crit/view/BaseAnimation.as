@@ -14,6 +14,7 @@ package minigames.clik_or_crit.view
 		
 		private var _node:LinkedListNode;
 		private var _isPlugedIn:Boolean;
+		protected var _updater:AnimUpdater;
 		
 		public function BaseAnimation() 
 		{
@@ -42,6 +43,7 @@ package minigames.clik_or_crit.view
 		
 		public function set updater(value:AnimUpdater):void 
 		{
+			_updater = value;
 		}
 		
 		public function get isPlugedIn():Boolean 

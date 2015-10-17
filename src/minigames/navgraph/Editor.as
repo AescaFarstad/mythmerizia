@@ -6,6 +6,7 @@ package minigames.navgraph
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.security.CertificateStatus;
 	import flash.ui.Keyboard;
 	
@@ -53,7 +54,12 @@ package minigames.navgraph
 			var cell:CellData = model.cellMatrix[int(e.localY / NavView.SIZE)][int(e.localX / NavView.SIZE)];
 			if (cell.x > 0 && cell.y > 0 && cell.x < NavSpace.SIZE_X - 1 && cell.y < NavSpace.SIZE_Y - 1)
 			{
-				model.toggleObstacle(cell.x, cell.y);
+				if (!model.cellMatrix[cell.y][cell.x].isObstacle)
+				{
+					model.addAsObstacle(new Rectangle(cell.x, cell.y, 1, 1));
+				}
+				else				
+					model.toggleObstacle(cell.x, cell.y);
 			}
 			Clipboard.generalClipboard.clear(); 
 			Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, model.saveToString(), false); 

@@ -18,6 +18,11 @@ package minigames.navgraph
 			
 		}
 		
+		public function toString():String 
+		{
+			return ["[", x, ",", y, "]"].join("");
+		}
+		
 		public function get mesh():Mesh 
 		{
 			return _mesh;

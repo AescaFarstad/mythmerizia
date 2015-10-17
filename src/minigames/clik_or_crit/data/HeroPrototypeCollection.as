@@ -26,21 +26,23 @@ package minigames.clik_or_crit.data
 			}
 		}
 		
-		public function loadPack(party:Party, prototypes:Vector.<HeroPrototype>):void 
+		public function loadPack(party:Party, prototypes:Vector.<HeroPrototype>, setter:Function):void 
 		{
 			for (var i:int = 0; i < prototypes.length; i++) 
 			{
-				loadHero(party, prototypes[i]);
+				loadHero(party, prototypes[i], setter);
 			}
 		}
 		
-		private function loadHero(party:Party, prototype:HeroPrototype):void 
+		private function loadHero(party:Party, prototype:HeroPrototype, setter:Function = null):void 
 		{
 			var hero:Hero = new Hero();
 			hero.load(prototype.heroSource, party);
+			if (setter != null)
+				setter(hero);
 			var ai:BaseHeroAI = AIFactory.getAI(prototype.heroSource.ai);
 			ai.load(hero, party.opponent);
-			hero.ai = ai;			
+			hero.ai = ai;
 			party.addHero(hero);
 		}
 		

@@ -15,6 +15,7 @@ package minigames.clik_or_crit
 		private var model:CCModel;
 		private var view:CCView;
 		private var timeManager:EngineTimeManager;
+		private var input:Input;
 		
 		public function CCMain() 
 		{
@@ -26,9 +27,9 @@ package minigames.clik_or_crit
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			model = new CCModel();
 			view = new CCView();
-			view.x = 100;
 			addChild(view);
 			view.load(model);
+			input = new Input(view, model);
 			
 			/*
 			for (var i:int = 0; i < model.playerParty.heroes.length; i++) 

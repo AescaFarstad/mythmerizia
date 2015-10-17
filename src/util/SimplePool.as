@@ -15,7 +15,15 @@
 		public function pop():*
 		{
 			_balance++;
-			return (_listLength > 0 ? _list[-- _listLength] : new _targetClass);
+			if (_listLength > 0)
+				return _list[-- _listLength];
+			else
+			{
+				var newInstance:* = new _targetClass();
+				if (newInstance is IPoolable)
+					(newInstance as IPoolable).setPool(this);
+				return newInstance;
+			}
 		}
 		
 		public function push(instance:*):*

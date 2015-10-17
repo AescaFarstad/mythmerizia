@@ -38,12 +38,12 @@ package minigames.gravnav
 		}
 		
 		public function update(timePassed:int):void 
-		{			
+		{
 			if (isTraveling)
 			{
 				var time:int = Math.min(travelDuration, mainView.timeline.currentTime - travelStartedAt);
-				x = HMath.linearInterp(0, animX * GravnavView.CELL_SIZE, travelDuration, lastY, time);
-				y = HMath.linearInterp(0, animY * GravnavView.CELL_SIZE, travelDuration, lastY, time);
+				x = HMath.linearInterp(0, animX * GravnavView.CELL_SIZE, travelDuration, lastX * GravnavView.CELL_SIZE, time);
+				y = HMath.linearInterp(0, animY * GravnavView.CELL_SIZE, travelDuration, lastY * GravnavView.CELL_SIZE, time);
 				if (time >= travelDuration)
 				{
 					isTraveling = false;

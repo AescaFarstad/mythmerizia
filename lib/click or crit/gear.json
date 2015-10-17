@@ -1,0 +1,38 @@
+{
+  "knight": {
+	"mantissa": 1.2,
+	"multiplier": 20,
+    "items": [
+          {
+            "name": "Shield",
+            "stats": [
+              {
+                "ultimateValue": null,
+                "divider": 10,
+                "attribute": "strength"
+              }
+            ]
+          },
+          {
+            "name": "Helmet",
+            "stats": [
+              {
+                "ultimateValue": null,
+                "divider": 15,
+                "attribute": "strength"
+              },
+			  {
+                "ultimateValue": null,
+                "divider": 25,
+                "attribute": "willpower"
+              },
+			  {
+                "ultimateValue": null,
+                "divider": 50,
+                "attribute": "agility"
+              }
+            ]
+          }
+        ]
+  }
+}

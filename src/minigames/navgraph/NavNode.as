@@ -37,6 +37,11 @@ package minigames.navgraph
 			return point.y;
 		}
 		
+		public function toString():String
+		{
+			return cell.toString();
+		}
+		
 	}
 
 }
