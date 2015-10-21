@@ -1,11 +1,17 @@
 package minigames.gravnav 
 {
+	import adobe.utils.CustomActions;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
+	import util.GameInfoPanel;
 	
 	public class GravnavModel extends EventDispatcher
 	{
+		private static const DIRECTIONS:Vector.<Point> = new <Point>[new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)];
+		
+		public static const COOLDOWN:int = 20;
+		public static const SPAWN_PERIOD:int = 4;
 		
 		public static const SIZE_X:int = 50;
 		public static const SIZE_Y:int = 40;
@@ -16,6 +22,9 @@ package minigames.gravnav
 		public var wasBlocked:Boolean;
 		public var finalStates:Vector.<Point>;
 		public var turnsTillSolution:int;
+		public var demons:Vector.<GravDemon>;
+		public var turnCount:int;
+		public var lost:Boolean;
 		
 		public function GravnavModel() 
 		{
@@ -43,7 +52,7 @@ package minigames.gravnav
 				cells[cell.y][cell.x] = false;
 				
 			}
-			
+			/*
 			finalStates = new Vector.<Point>();
 			for (var k:int = 0; k < 5; k++) 
 			{
@@ -54,7 +63,7 @@ package minigames.gravnav
 					continue;
 				}
 				finalStates.push(finalState);
-			}
+			}*/
 			
 			hero = new Hero();
 			cell = null;
@@ -62,9 +71,24 @@ package minigames.gravnav
 				cell = new Point(int(Math.random() * SIZE_X), int(Math.random() * SIZE_Y));
 			hero.x = cell.x;
 			hero.y = cell.y;
-			
+			/*
 			if (!checkIsHasSolution())
-				restart();
+				restart();*/
+				
+			demons = new Vector.<GravDemon>();
+			var numDemons:int = 3;
+			for (var m:int = 0; m < numDemons; m++) 
+			{
+				var demon:GravDemon = new GravDemon();
+				while (!cell || !cells[cell.y][cell.x] || cell.x == hero.x && cell.y == hero.y)
+					cell = new Point(int(Math.random() * SIZE_X), int(Math.random() * SIZE_Y));
+				demon.x = cell.x;
+				demon.y = cell.y;
+				demons.push(demon);
+				cell = null;
+				
+			}
+			
 		}
 		
 		public function checkIsHasSolution():Boolean 
@@ -94,10 +118,10 @@ package minigames.gravnav
 				for (var j:int = 0; j < frontier.length; j++) 
 				{
 					var newPoints:Vector.<int> = new <int>[
-							expand(frontier[j], -1, 0),
-							expand(frontier[j], 1, 0),
 							expand(frontier[j], 0, -1),
-							expand(frontier[j], 0, 1)
+							expand(frontier[j], 1, 0),
+							expand(frontier[j], 0, 1),
+							expand(frontier[j], -1, 0)
 							]
 					for (var k:int = 0; k < newPoints.length; k++) 
 					{
@@ -144,18 +168,117 @@ package minigames.gravnav
 			else
 				if (wasBlocked)
 			{
-				wasBlocked = false;
-				checkIsHasSolution();
+				wasBlocked = false;/*
+				checkIsHasSolution();*/
 			}
-			if (inputCooldown <= 0 && heroIsInFinalState())
+			if (inputCooldown < 0 && lost)
 				dispatchEvent(new Event(Event.COMPLETE));
+			else if (inputCooldown < 0 && heroIsInFinalState())
+			{
+				trace(GameInfoPanel.instance.label.text);
+				lost = true;
+				inputCooldown = 2000;				
+			}
 		}
+		
+		public function moveDemons():void 
+		{
+			turnCount++;
+			if (turnCount % SPAWN_PERIOD == 0)
+			{
+				var sampleDemon:GravDemon = demons[int(Math.random() * demons.length)];
+				var newD:GravDemon = new GravDemon();
+				newD.x = sampleDemon.x;
+				newD.y = sampleDemon.y;
+				demons.push(newD);
+				trace("new Demon");
+				dispatchEvent(new Event("demon"));
+			}
+			var length:int;
+			for (var i:int = 0; i < demons.length; i++) 
+			{
+				length = Math.max(length, demons[i].move(this));
+			}
+			inputCooldown = Math.max(inputCooldown, length * COOLDOWN);
+		}
+		
+		public function getFirstStep(fromX:Number, fromY:Number, toX:Number, toY:Number):Point 
+		{
+			var maxDepth:int = 25;
+			var visitedStaes:Vector.<int> = new Vector.<int>();
+			var frontier:Vector.<int> = new Vector.<int>();
+			var frontierDirections:Vector.<Point> = new Vector.<Point>();
+			var finals:Vector.<int> = new Vector.<int>();
+			finals.push(toX * SIZE_X + toY);
+			
+			frontier.push(fromX * SIZE_X + fromY);
+			/*
+			var reachedState:Point;
+			var result:int = iterate(0);			
+			trace("depth", result, "visited", visitedStaes.length);	
+			turnsTillSolution = result;
+			return result > 10;*/
+			return iterate(0);
+			
+			function iterate(depth:int):Point
+			{
+				var newFrontier:Vector.<int> = new Vector.<int>();
+				var newDirections:Vector.<Point> = new Vector.<Point>();
+				for (var j:int = 0; j < frontier.length; j++) 
+				{
+					var newPoints:Vector.<int> = new <int>[
+							expand(frontier[j], 0, -1),
+							expand(frontier[j], 1, 0),
+							expand(frontier[j], 0, 1),
+							expand(frontier[j], -1, 0)
+							]
+					for (var k:int = 0; k < newPoints.length; k++) 
+					{
+						if (visitedStaes.indexOf(newPoints[k]) == -1 &&
+							frontier.indexOf(newPoints[k]) == -1 &&
+							newFrontier.indexOf(newPoints[k]) == -1)
+						{
+							visitedStaes.push(newPoints[k]);
+							newFrontier.push(newPoints[k]);
+							if (frontierDirections.length > j)
+								newDirections.push(frontierDirections[j]);
+							else
+								newDirections.push(DIRECTIONS[k]);
+							if (finals.indexOf(newPoints[k]) != -1)
+							{
+								return newDirections[newDirections.length - 1];
+							}
+						}
+					}
+					
+				}
+				frontier = newFrontier;
+				frontierDirections = newDirections;
+				if (depth < maxDepth)
+					return iterate(depth + 1);
+				else
+					return null;
+			}
+			
+			function expand(point:int, mx:int, my:int):int
+			{
+				var x:int = point / SIZE_X;
+				var y:int = point % SIZE_X;
+				while (cells[y + my][x + mx])
+				{
+					x += mx;
+					y += my;				
+				}
+				return x * SIZE_X + y;
+			}
+		}
+		
 		
 		private function heroIsInFinalState():Boolean 
 		{
-			for (var i:int = 0; i < finalStates.length; i++) 
+			for (var i:int = 0; i < demons.length; i++) 
 			{
-				if (hero.x == finalStates[i].x && hero.y == finalStates[i].y)
+				if (hero.x == demons[i].x && hero.y == demons[i].y)
 					return true;
 			}
 			return false;

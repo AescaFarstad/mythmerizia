@@ -3,10 +3,10 @@ package minigames.gravnav
 	import flash.display.Stage;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
+	import util.GameInfoPanel;
 	
 	public class UserLogic 
 	{
-		private static const COOLDOWN:int = 50;
 		private static const KEYS:Vector.<uint> = new <uint>[Keyboard.UP, Keyboard.RIGHT, Keyboard.DOWN, Keyboard.LEFT];
 		private static const DIRECTIONS:Vector.<Point> = new <Point>[new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)];
 		
@@ -52,8 +52,10 @@ package minigames.gravnav
 						{
 							if (model.cells[model.hero.y + DIRECTIONS[i].y][model.hero.x + DIRECTIONS[i].x])
 							{
+								//trace("GIP:", GameInfoPanel.instance.label.text);
 								var length:int = model.hero.travel(DIRECTIONS[i], model);
-								model.inputCooldown = COOLDOWN * length;
+								model.inputCooldown = GravnavModel.COOLDOWN * length;
+								model.moveDemons();
 								return;
 							}
 						}
@@ -61,7 +63,7 @@ package minigames.gravnav
 				}
 			}
 			if (keyboard.activeKeys[Keyboard.SPACE])
-				model.checkIsHasSolution();
+				model.moveDemons();
 		}
 		
 		public function get isInputEnabled():Boolean

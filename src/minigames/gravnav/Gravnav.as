@@ -2,6 +2,7 @@ package minigames.gravnav
 {
 	import engine.TimeLineManager;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import ui.AlertBox;
 	import util.EnterFrameEvent;
@@ -37,6 +38,8 @@ package minigames.gravnav
 		
 		public function load():void 
 		{
+			var stage:Stage = stage;
+			var tthis:Gravnav = this;
 			timeline.load();
 			model = new GravnavModel();
 			logic.load(model);
@@ -51,16 +54,20 @@ package minigames.gravnav
 			view.y = (stage.height - view.height) / 2;
 			
 			model.addEventListener(Event.COMPLETE, onComplete)
-			
 			EnterFramer.addEnterFrameUpdate(onFrame);
-			new AlertBox(stage, S.format.black(16) + "Доведи зелёный шарик до любого синего квадратика.<##> Управление - стрелочками на клавиатуре.", 
-					300, new < String > ["OK"], new < Function > [function():void { } ]);
+			new AlertBox(stage, S.format.black(16) + "Избегай встречи с КРАСНЫМИ ДЕМОНАМИ!<##> Управление - стрелочками на клавиатуре.", 
+					400, new <String> ["OK"], new <Function> [function():void {stage.focus = tthis; } ]);
+					
 		}
 		
 		private function onComplete(e:Event):void 
 		{
+			var stage:Stage = stage;
+			var tthis:Gravnav = this;
 			view.parent.removeChild(view);
 			EnterFramer.removeEnterFrameUpdate(onFrame);
+			new AlertBox(stage, S.format.black(16) + "Твой результат: " + model.turnCount.toString() + " ходов!", 400, 
+					new < String > ["Ещё разок!"], new < Function > [function():void { load(); stage.focus = tthis; } ]);
 		}
 		
 		private function onFrame(e:EnterFrameEvent):void 

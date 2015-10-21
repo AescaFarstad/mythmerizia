@@ -2,6 +2,7 @@ package minigames.gravnav
 {
 	import engine.TimeLineManager;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import util.GameInfoPanel;
 	
 	
@@ -13,6 +14,7 @@ package minigames.gravnav
 		private var logic:UserLogic;
 		
 		private var heroView:HeroView;
+		private var demonViews:Vector.<DemonView>;
 		public var timeline:TimeLineManager;
 		
 		public function GravnavView() 
@@ -35,7 +37,22 @@ package minigames.gravnav
 			this.model = model;
 			timeline.load();
 			heroView.load(model.hero, logic);
+			demonViews = new Vector.<DemonView>();
+			for (var i:int = 0; i < model.demons.length; i++) 
+			{
+				var demonView:DemonView = new DemonView(model.demons[i], this, logic);
+				addChild(demonView);
+				demonViews.push(demonView);
+			}
+			model.addEventListener("demon", onDemon);
 			render();
+		}
+		
+		private function onDemon(e:Event):void 
+		{
+			var demonView:DemonView = new DemonView(model.demons[model.demons.length - 1], this, logic);
+			addChild(demonView);
+			demonViews.push(demonView);
 		}
 		
 		private function render():void 
@@ -55,27 +72,27 @@ package minigames.gravnav
 					}
 				}
 			}
-			
+			/*
 			for (var k:int = 0; k < model.finalStates.length; k++) 
 			{				
 				graphics.beginFill(0x9999cc, 1);
 				graphics.drawRoundRect(model.finalStates[k].x * CELL_SIZE, model.finalStates[k].y * CELL_SIZE, CELL_SIZE, CELL_SIZE, 12, 12);
 				graphics.endFill();
-			}
+			}*/
 		}
 		
 		public function update(timePassed:int):void 
 		{
 			timeline.update(timePassed);
 			heroView.update(timePassed);
-			if (model.turnsTillSolution > 0 && model.turnsTillSolution < 7)
-				GameInfoPanel.instance.label.text = "Дальше подсказывать не буду.";
-			else if (model.turnsTillSolution == -1)
-				GameInfoPanel.instance.label.text = "А вот, кажется, и всё. Отсюда уже не выбраться.";
-			else
-				GameInfoPanel.instance.label.text = "Ближайшее решение в " + (model.turnsTillSolution + 1).toString() + " шагах";
+			for (var i:int = 0; i < demonViews.length; i++) 
+			{
+				demonViews[i].update(timePassed);
+			}
+			GameInfoPanel.instance.label.text = S.format.black(16) + "Ты выживаешь уже " + model.turnCount.toString() + " ходов!";			
 		}
 		
+		clear
 	}
 
 }

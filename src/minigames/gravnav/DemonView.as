@@ -4,11 +4,11 @@ package minigames.gravnav
 	import util.HMath;
 	
 	
-	public class HeroView extends Sprite implements IHeroListener
+	public class DemonView extends Sprite implements IHeroListener
 	{
-		private static var TRAVEL_TIME:int = 20;
+		private static const TRAVEL_TIME:int = 20;
 		
-		private var hero:Hero;
+		private var demon:GravDemon;
 		private var lastX:int;
 		private var lastY:int;
 		
@@ -20,22 +20,19 @@ package minigames.gravnav
 		private var mainView:GravnavView;
 		private var logic:UserLogic;
 		
-		public function init(mainView:GravnavView):void 
-		{
-			this.mainView = mainView;
-			TRAVEL_TIME = GravnavModel.COOLDOWN;
-			
-		}
 		
-		public function load(hero:Hero, logic:UserLogic):void 
+		public function DemonView(demon:GravDemon, mainView:GravnavView, logic:UserLogic) 
 		{
+			super();
 			this.logic = logic;
-			this.hero = hero;
-			hero.listener = this;
-			lastX = hero.x;
-			lastY = hero.y;
-			x = hero.x * GravnavView.CELL_SIZE;
-			y = hero.y * GravnavView.CELL_SIZE;
+			this.demon = demon;
+			this.mainView = mainView;
+			demon.listener = this;
+			lastX = demon.x;
+			lastY = demon.y;
+			x = demon.x * GravnavView.CELL_SIZE;
+			y = demon.y * GravnavView.CELL_SIZE;
+			
 		}
 		
 		public function update(timePassed:int):void 
@@ -59,8 +56,8 @@ package minigames.gravnav
 			isTraveling = true;
 			animX = lastX;
 			animY = lastY;
-			lastX = hero.x;
-			lastY = hero.y;
+			lastX = demon.x;
+			lastY = demon.y;
 			travelStartedAt = mainView.timeline.currentTime;
 			travelDuration = length * TRAVEL_TIME;
 		}
@@ -69,13 +66,12 @@ package minigames.gravnav
 		{
 			graphics.clear();			
 			graphics.lineStyle(1, 0, 0);
-			var color:uint = logic.isInputEnabled ? 0x55ff55 : 0x00bb00;
+			var color:uint = logic.isInputEnabled ? 0xff5555 : 0xbb0000;
 			
 			graphics.beginFill(color, 1);
 			graphics.drawCircle(GravnavView.CELL_SIZE/2 - 1, GravnavView.CELL_SIZE/2 - 1, GravnavView.CELL_SIZE/2 - 1);
 			graphics.endFill();
 		}
-		
 	}
 
 }
