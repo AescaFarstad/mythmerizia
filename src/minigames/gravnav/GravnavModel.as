@@ -11,7 +11,7 @@ package minigames.gravnav
 		private static const DIRECTIONS:Vector.<Point> = new <Point>[new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)];
 		
 		public static const COOLDOWN:int = 20;
-		public static const SPAWN_PERIOD:int = 4;
+		public static const SPAWN_PERIOD:int = 3;
 		
 		public static const SIZE_X:int = 50;
 		public static const SIZE_Y:int = 40;
@@ -23,6 +23,7 @@ package minigames.gravnav
 		public var finalStates:Vector.<Point>;
 		public var turnsTillSolution:int;
 		public var demons:Vector.<GravDemon>;
+		public var futurePoints:Vector.<FuturePoint>;
 		public var turnCount:int;
 		public var lost:Boolean;
 		
@@ -76,7 +77,7 @@ package minigames.gravnav
 				restart();*/
 				
 			demons = new Vector.<GravDemon>();
-			var numDemons:int = 3;
+			var numDemons:int = 6;
 			for (var m:int = 0; m < numDemons; m++) 
 			{
 				var demon:GravDemon = new GravDemon();
@@ -183,6 +184,7 @@ package minigames.gravnav
 		
 		public function moveDemons():void 
 		{
+			//futurePoints = updateFuturePoints(hero.x, hero.y);
 			turnCount++;
 			if (turnCount % SPAWN_PERIOD == 0)
 			{
@@ -200,6 +202,42 @@ package minigames.gravnav
 				length = Math.max(length, demons[i].move(this));
 			}
 			inputCooldown = Math.max(inputCooldown, length * COOLDOWN);
+		}
+		
+		public function updateFuturePoints(x:int, y:int):Vector.<FuturePoint> 
+		{
+			var result:Vector.<FuturePoint> = new Vector.<FuturePoint>();
+			var depth:int = 4;
+			var frontier:Vector.<int> = new Vector.<int>();
+			frontier.push(x * SIZE_X + y);
+			var coveredPoints:Vector.<int> = new Vector.<int>();
+			for (var i:int = 0; i < depth; i++) 
+			{
+				for (var j:int = 0; j < frontier.length; j++) 
+				{
+					var futurePoint:FuturePoint = new FuturePoint();
+					futurePoint.x = frontier[j] / SIZE_X;
+					futurePoint.y = frontier[j] % SIZE_X;
+					futurePoint.delay = i;
+					result.push(futurePoint);
+					coveredPoints.push(frontier[j]);
+				}
+				var newFrontier:Vector.<int> = new Vector.<int>();
+				for (var k:int = 0; k < frontier.length; k++) 
+				{
+					var extendedPoints:Vector.<Point> = getMoveOptions(frontier[k] / SIZE_X, frontier[k] % SIZE_X);
+					for (var l:int = 0; l < extendedPoints.length; l++) 
+					{
+						var newPoint:int = extendedPoints[l].x * SIZE_X + extendedPoints[l].y;
+						if (coveredPoints.indexOf(newPoint) != -1 || newFrontier.indexOf(newPoint) != -1)
+							continue;
+						newFrontier.push(newPoint);
+					}
+				}
+				frontier = newFrontier;
+			}
+			result.sort(FuturePoint.sort);
+			return result;
 		}
 		
 		public function getFirstStep(fromX:Number, fromY:Number, toX:Number, toY:Number):Point 
@@ -271,6 +309,24 @@ package minigames.gravnav
 				}
 				return x * SIZE_X + y;
 			}
+		}
+		
+		public function getMoveOptions(x:Number, y:Number):Vector.<Point>
+		{
+			var result:Vector.<Point> = new Vector.<Point>();
+			for (var i:int = 0; i < DIRECTIONS.length; i++)
+			{
+				var travelX:int = x;
+				var travelY:int = y;
+				while (cells[travelY + DIRECTIONS[i].y][travelX + DIRECTIONS[i].x])
+				{
+					travelX += DIRECTIONS[i].x;
+					travelY += DIRECTIONS[i].y;				
+				}
+				if (travelX != x || travelY != y)
+					result.push(new Point(travelX, travelY));				
+			}
+			return result;
 		}
 		
 		
