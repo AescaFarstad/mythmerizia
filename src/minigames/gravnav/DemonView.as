@@ -65,6 +65,7 @@ package minigames.gravnav
 			lastY = demon.y;
 			travelStartedAt = mainView.timeline.currentTime;
 			travelDuration = length * TRAVEL_TIME;
+			travelDuration = Math.min(GravnavModel.MAX_COOLDOWN, travelDuration);
 			willCatch = model.hero.x == demon.x && model.hero.y == demon.y;
 			if (willCatch)
 				trace("willCatch!");

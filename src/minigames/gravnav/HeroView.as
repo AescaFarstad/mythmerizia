@@ -62,7 +62,7 @@ package minigames.gravnav
 			lastX = hero.x;
 			lastY = hero.y;
 			travelStartedAt = mainView.timeline.currentTime;
-			travelDuration = length * TRAVEL_TIME;
+			travelDuration = Math.min(GravnavModel.MAX_COOLDOWN, length * TRAVEL_TIME);
 		}
 		
 		private function render():void 

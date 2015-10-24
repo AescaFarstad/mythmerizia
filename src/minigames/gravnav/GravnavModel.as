@@ -11,6 +11,7 @@ package minigames.gravnav
 		private static const DIRECTIONS:Vector.<Point> = new <Point>[new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)];
 		
 		public static const COOLDOWN:int = 20;
+		public static const MAX_COOLDOWN:int = 300;
 		public static const SPAWN_PERIOD:int = 3;
 		
 		public static const SIZE_X:int = 50;
@@ -202,6 +203,7 @@ package minigames.gravnav
 				length = Math.max(length, demons[i].move(this));
 			}
 			inputCooldown = Math.max(inputCooldown, length * COOLDOWN);
+			inputCooldown = Math.min(inputCooldown, MAX_COOLDOWN);
 		}
 		
 		public function updateFuturePoints(x:int, y:int):Vector.<FuturePoint> 
