@@ -25,6 +25,13 @@
 			mouseChildren = false;
 			_createDesign();
 			addEventListener(MouseEvent.CLICK, onClick);
+			EnterFramer.addEnterFrameUpdate(onFrame);
+		}
+		
+		private function onFrame(e:Event):void 
+		{
+			if (parent)
+				parent.setChildIndex(this, parent.numChildren - 1);
 		}
 		
 		private function onClick(e:MouseEvent):void 

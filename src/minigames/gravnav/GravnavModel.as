@@ -8,10 +8,10 @@ package minigames.gravnav
 	
 	public class GravnavModel extends EventDispatcher
 	{
-		private static const DIRECTIONS:Vector.<Point> = new <Point>[new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)];
+		public static const DIRECTIONS:Vector.<Point> = new <Point>[new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)];
 		
 		public static const COOLDOWN:int = 20;
-		public static const MAX_COOLDOWN:int = 300;
+		public static const MAX_COOLDOWN:int = 150;
 		public static const SPAWN_PERIOD:int = 3;
 		
 		public static const SIZE_X:int = 50;
@@ -24,9 +24,12 @@ package minigames.gravnav
 		public var finalStates:Vector.<Point>;
 		public var turnsTillSolution:int;
 		public var demons:Vector.<GravDemon>;
+		public var balls:Vector.<Hero>;
 		public var futurePoints:Vector.<FuturePoint>;
 		public var turnCount:int;
 		public var lost:Boolean;
+		public var turnsToNearestSolution:int;
+		public var solution:PokemonSolution = new PokemonSolution();
 		
 		public function GravnavModel() 
 		{
@@ -66,31 +69,41 @@ package minigames.gravnav
 				}
 				finalStates.push(finalState);
 			}*/
-			
+			/*
 			hero = new Hero();
 			cell = null;
 			while (!cell || !cells[cell.y][cell.x])
 				cell = new Point(int(Math.random() * SIZE_X), int(Math.random() * SIZE_Y));
 			hero.x = cell.x;
-			hero.y = cell.y;
+			hero.y = cell.y;*/
 			/*
 			if (!checkIsHasSolution())
 				restart();*/
 				
-			demons = new Vector.<GravDemon>();
-			var numDemons:int = 6;
-			for (var m:int = 0; m < numDemons; m++) 
+			balls = new Vector.<Hero>();
+			var numBalls:int = 25;
+			for (var m:int = 0; m < numBalls; m++) 
 			{
-				var demon:GravDemon = new GravDemon();
-				while (!cell || !cells[cell.y][cell.x] || cell.x == hero.x && cell.y == hero.y)
+				var ball:Hero = new Hero();
+				while (!cell || !cells[cell.y][cell.x] || isOccupied(cell.x, cell.y))
 					cell = new Point(int(Math.random() * SIZE_X), int(Math.random() * SIZE_Y));
-				demon.x = cell.x;
-				demon.y = cell.y;
-				demons.push(demon);
+				ball.x = cell.x;
+				ball.y = cell.y;
+				balls.push(ball);
 				cell = null;
 				
 			}
-			
+			updateSolution();
+		}
+		
+		private function isOccupied(x:int, y:int):Boolean
+		{
+			for (var i:int = 0; i < balls.length; i++) 
+			{
+				if (balls[i].x == x && balls[i].y == y)
+					return true;
+			}
+			return false;
 		}
 		
 		public function checkIsHasSolution():Boolean 
@@ -182,6 +195,8 @@ package minigames.gravnav
 				inputCooldown = 2000;				
 			}
 		}
+		
+		
 		
 		public function moveDemons():void 
 		{
@@ -331,15 +346,37 @@ package minigames.gravnav
 			return result;
 		}
 		
+		public function updateSolution():void 
+		{
+			solution.find(this, onDone);
+			function onDone():void
+			{
+				turnsToNearestSolution = solution.turnCount;/*
+				var lastState:BallState = solution.solution;
+				while (lastState.history)
+				{
+					if (lastState.lastMove.x == -1)
+						trace("left", lastState.numBalls);
+					if (lastState.lastMove.y == -1)
+						trace("up", lastState.numBalls);
+					if (lastState.lastMove.x == 1)
+						trace("right", lastState.numBalls);
+					if (lastState.lastMove.y == 1)
+						trace("down", lastState.numBalls);
+					lastState = lastState.history;
+				}*/
+			}
+		}
+		
 		
 		private function heroIsInFinalState():Boolean 
 		{
-			for (var i:int = 0; i < demons.length; i++) 
+			for (var i:int = 0; i < balls.length; i++) 
 			{
-				if (hero.x == demons[i].x && hero.y == demons[i].y)
-					return true;
+				if (balls[0].x != balls[i].x || balls[0].y != balls[i].y)
+					return false;
 			}
-			return false;
+			return true;
 		}
 	}
 

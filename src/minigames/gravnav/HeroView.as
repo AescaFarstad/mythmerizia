@@ -8,7 +8,7 @@ package minigames.gravnav
 	{
 		private static var TRAVEL_TIME:int = 20;
 		
-		private var hero:Hero;
+		private var hero:*;
 		private var lastX:int;
 		private var lastY:int;
 		
@@ -27,7 +27,7 @@ package minigames.gravnav
 			
 		}
 		
-		public function load(hero:Hero, logic:UserLogic):void 
+		public function load(hero:*, logic:UserLogic):void 
 		{
 			this.logic = logic;
 			this.hero = hero;

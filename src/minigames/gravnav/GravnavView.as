@@ -4,6 +4,7 @@ package minigames.gravnav
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import util.DebugRug;
 	import util.GameInfoPanel;
 	
 	
@@ -14,8 +15,7 @@ package minigames.gravnav
 		private var model:GravnavModel;
 		private var logic:UserLogic;
 		
-		private var heroView:HeroView;
-		private var demonViews:Vector.<DemonView>;
+		private var heroViews:Vector.<HeroView>;
 		public var timeline:TimeLineManager;
 		
 		public function GravnavView() 
@@ -26,8 +26,6 @@ package minigames.gravnav
 		
 		public function init():void 
 		{
-			heroView = new HeroView();
-			heroView.init(this);
 			timeline = new TimeLineManager();
 		}
 		
@@ -35,27 +33,20 @@ package minigames.gravnav
 		{
 			clear();
 			alpha = 1;
-			addChild(heroView);
 			this.logic = logic;
 			this.model = model;
 			timeline.load();
-			heroView.load(model.hero, logic);
-			demonViews = new Vector.<DemonView>();
-			for (var i:int = 0; i < model.demons.length; i++) 
+			
+			heroViews = new Vector.<HeroView>();
+			for (var j:int = 0; j < model.balls.length; j++) 
 			{
-				var demonView:DemonView = new DemonView(model.demons[i], this, logic, model);
-				addChild(demonView);
-				demonViews.push(demonView);
+				var view:HeroView = new HeroView();
+				view.init(this);
+				view.load(model.balls[j], logic);
+				addChild(view);
+				heroViews.push(view);
 			}
-			model.addEventListener("demon", onDemon);
 			render();
-		}
-		
-		private function onDemon(e:Event):void 
-		{
-			var demonView:DemonView = new DemonView(model.demons[model.demons.length - 1], this, logic, model);
-			addChild(demonView);
-			demonViews.push(demonView);
 		}
 		
 		private function render():void 
@@ -98,12 +89,17 @@ package minigames.gravnav
 		{
 			//render();
 			timeline.update(timePassed);
-			heroView.update(timePassed);
-			for (var i:int = 0; i < demonViews.length; i++) 
+			for (var j:int = 0; j < heroViews.length; j++) 
 			{
-				demonViews[i].update(timePassed);
+				heroViews[j].update(timePassed);
 			}
-			GameInfoPanel.instance.label.text = S.format.black(16) + "Ты выживаешь уже " + model.turnCount.toString() + " ходов!";
+			var text:String = S.format.black(16) + "Прошло " + model.turnCount.toString() + 
+					" ходов. Ближайшее решение в ";
+			if (model.turnsToNearestSolution >= 0)
+				text += model.turnsToNearestSolution + " ходах отсюда.";
+			else
+				text = S.format.black(16) + "Прошло " + model.turnCount.toString() + "а ближайшее решение... погоди минуточку..."
+			GameInfoPanel.instance.label.text = text;
 			if (model.lost)
 				alpha = 0.2 + 0.7 * (Math.sin(getTimer() / 70) + 1) / 2;
 		}

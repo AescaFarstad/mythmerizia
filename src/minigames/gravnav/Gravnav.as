@@ -55,7 +55,7 @@ package minigames.gravnav
 			
 			model.addEventListener(Event.COMPLETE, onComplete)
 			EnterFramer.addEnterFrameUpdate(onFrame);
-			new AlertBox(stage, S.format.black(16) + "Избегай встречи с КРАСНЫМИ ДЕМОНАМИ!<##> Управление - стрелочками на клавиатуре.", 
+			new AlertBox(stage, S.format.black(16) + "Собери все зелёные шарики в одной клетке! <##> Управление - стрелочками на клавиатуре.", 
 					400, new <String> ["OK"], new <Function> [function():void {stage.focus = tthis; } ]);
 					
 		}
@@ -66,7 +66,7 @@ package minigames.gravnav
 			var tthis:Gravnav = this;
 			view.parent.removeChild(view);
 			EnterFramer.removeEnterFrameUpdate(onFrame);
-			new AlertBox(stage, S.format.black(16) + "Твой результат: " + model.turnCount.toString() + " ходов!", 400, 
+			new AlertBox(stage, S.format.black(16) + "Тебе удалось собрать все шарики за: " + model.turnCount.toString() + " ходов!", 400, 
 					new < String > ["Ещё разок!"], new < Function > [function():void { load(); stage.focus = tthis; } ]);
 		}
 		

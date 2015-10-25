@@ -103,6 +103,30 @@ package util
 			}
 			return result;
 		}
+		
+		static public function whyNotVisible(obj:DisplayObject):void
+		{
+			checkObject(obj, 0);
+			
+			function checkObject(obj:DisplayObject, depth:int):void
+			{
+				if (!obj.visible || 
+					obj.scaleX == 0 || 
+					obj.scaleY == 0 || 
+					isNaN(obj.scaleX) || 
+					isNaN(obj.scaleY) || 
+					obj.width == 0 || 
+					obj.height == 0 || 
+					obj.alpha == 0)
+					throw new Error("Not visible because " + depth + " layer has problems. " + obj);
+				if (obj.parent && !(obj.parent is Stage))
+					checkObject(obj.parent, depth + 1);
+				else if (!obj.parent)
+					throw new Error("Not visible because " + depth + " not on stage " + obj);
+				else
+					trace("It's visible. Check coors may be?");
+			}
+		}
 
 	}
 
