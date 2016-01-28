@@ -2,6 +2,7 @@ package minigames.bmd
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
 	import starling.display.Sprite;
 	import starling.textures.TextureAtlas;
 	public class BMDStarling extends Sprite
@@ -23,7 +24,7 @@ package minigames.bmd
 		public function load(model:BMDModel):void
 		{
 			this.model = model;
-			addEventListener(MouseEvent.CLICK, onClick);
+			//addEventListener(MouseEvent.CLICK, onClick);
 		}
 		
 		
@@ -31,7 +32,7 @@ package minigames.bmd
 		{
 			render();
 		}
-		
+		/*
 		private function render():void
 		{
 			graphics.clear();
@@ -67,6 +68,6 @@ package minigames.bmd
 					graphics.endFill();
 				}
 			}
-		}
+		}*/
 	}
 }

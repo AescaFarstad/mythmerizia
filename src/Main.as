@@ -3,12 +3,8 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
-	import minigames.bmd.BMDMain;
-	import minigames.cardamon.CardamonMain;
-	import minigames.clik_or_crit.CCMain;
 	import minigames.gravnav.Gravnav;
-	import minigames.tsp.TSPSessionManager;
-	import minigames.navgraph.NavGraphMain;
+	import minigames.knitting.KnitMain;
 	import resources.Resources;
 	import util.EnterFramer;
 	import util.GameInfoPanel;
@@ -53,7 +49,9 @@ package
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
 			
-			addChild(new BMDMain());
+			addChild(new KnitMain());
+			
+			//addChild(new BMDMain());
 			return;
 			
 			
