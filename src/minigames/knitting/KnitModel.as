@@ -1,7 +1,10 @@
 package minigames.knitting 
 {
 	import flash.geom.Point;
+	import util.EnterFrameEvent;
+	import util.EnterFramer;
 	import util.HMath;
+	import util.RMath;
 	public class KnitModel
 	{
 		private static const numSeeds:int = 4;
@@ -14,11 +17,15 @@ package minigames.knitting
 		
 		public var points:Vector.<Point>;
 		public var paths:Vector.<Vector.<Point>>;
+		public var initialPaths:Vector.<Vector.<Point>>;
+		public var targetPaths:Vector.<Vector.<Point>>;
 		
 		public var inputPoints:Vector.<Point>;
 		public var outputPoints:Vector.<Point>;
 		private var freePoints:Vector.<Point>;
 		private var unusedPoints:Vector.<Point>;
+		
+		public var solutionProgress:Number = 0;
 		
 		public function KnitModel()
 		{
@@ -35,6 +42,9 @@ package minigames.knitting
 			initInputs();
 			initFreePoints();
 			initPaths();
+			
+			solutionProgress = 0;
+			copyPoints();
 		}
 		
 		public function splinePaths():void
@@ -64,10 +74,10 @@ package minigames.knitting
 			for (i = 0; i < paths.length; i++)
 			{
 				var bestIndex:int;
-				var bestAngle:Number = 0;
-				for (var j:int = 1; j < paths[i].length; j++)
+				bestAngle = 0;
+				for (j = 1; j < paths[i].length; j++)
 				{
-					var angle:Number = HMath.angleShortestDelta(
+					angle = HMath.angleShortestDelta(
 							Math.atan2(paths[i][j].y - offenders[i].y, paths[i][j].x - offenders[i].x),
 							Math.atan2(paths[i][j - 1].y - offenders[i].y, paths[i][j - 1].x - offenders[i].x));
 					if (angle > bestAngle)
@@ -81,8 +91,91 @@ package minigames.knitting
 			}
 		}
 		
+		public function solve():void
+		{
+			EnterFramer.addEnterFrameUpdate(onFrame);
+			copyPoints();
+		}
+		
+		private function copyPoints():void
+		{
+			initialPaths = paths.slice();
+			targetPaths = new Vector.<Vector.<Point>>();
+			for (var i:int = 0; i < initialPaths.length; i++)
+			{
+				initialPaths[i] = initialPaths[i].slice();
+				targetPaths.push(new Vector.<Point>());
+				for (var j:int = 0; j < initialPaths[i].length; j++)
+				{
+					initialPaths[i][j] = initialPaths[i][j].clone();
+					targetPaths[i][j] = getTarget(i, j);
+				}
+			}
+		}
+		
+		private function onFrame(e:EnterFrameEvent):void
+		{
+			var totalTime:int = 2000;
+			solutionProgress = Math.min(solutionProgress + e.timePassed / totalTime, 1);
+			
+			movePointsToProgress();			
+			
+			if (solutionProgress == 1)
+				EnterFramer.removeEnterFrameUpdate(onFrame);
+		}
+		
+		public function movePointsToProgress():void
+		{
+			for (var i:int = 0; i < paths.length; i++)
+			{
+				for (var j:int = 1; j < paths[i].length - 1; j++)
+				{
+					paths[i][j].x = HMath.linearInterp(0, initialPaths[i][j].x, 1, targetPaths[i][j].x, solutionProgress);
+					paths[i][j].y = HMath.linearInterp(0, initialPaths[i][j].y, 1, targetPaths[i][j].y, solutionProgress);
+				}
+			}
+		}
+		
+		private function getTarget(i:int, j:int):Point
+		{
+			return new Point(
+					HMath.linearInterp(0, paths[i][0].x, paths[i].length - 1, paths[i][paths[i].length - 1].x, j),
+					HMath.linearInterp(0, paths[i][0].y, paths[i].length - 1, paths[i][paths[i].length - 1].y, j));
+		}
+		
 		private function initPaths():void
 		{
+			
+			paths = new Vector.<Vector.<Point>>();
+			unusedPoints = freePoints.slice();
+			for (var i:int = 0; i < numInputs; i++)
+			{
+				var path:Vector.<Point> = new Vector.<Point>();
+				paths.push(path);
+				path.push(inputPoints[i]);
+				var numPathPoints:int = unusedPoints.length / (numInputs - i);
+				
+				var weights:Vector.<Number> = new Vector.<Number>();
+				for (var k:int = 0; k < unusedPoints.length; k++)
+				{
+					weights.push(Math.pow(HMath.distanceFromPointToLine(
+							unusedPoints[i].x, unusedPoints[i].y, 
+							inputPoints[i].x, inputPoints[i].y, 
+							outputPoints[i].x, outputPoints[i].y), 3)); 
+				}
+				
+				var pickedPoints:Array = RMath.weightedRandom(unusedPoints, weights, numPathPoints, true, true, 5);
+				RMath.shuffleList(pickedPoints);
+				
+				for (var j:int = 0; j < pickedPoints.length; j++)
+				{
+					var index:int = unusedPoints.indexOf(pickedPoints[j]);
+					unusedPoints.splice(index, 1);
+					path.push(pickedPoints[j]);
+				}				
+				path.push(outputPoints[i]);
+			}
+			/*
 			paths = new Vector.<Vector.<Point>>();
 			unusedPoints = freePoints.slice();
 			for (var i:int = 0; i < numInputs; i++)
@@ -99,7 +192,7 @@ package minigames.knitting
 					path.push(p);
 				}				
 				path.push(outputPoints[i]);
-			}
+			}*/
 		}
 		
 		private function initFreePoints():void
@@ -150,6 +243,7 @@ package minigames.knitting
 				points.push(p);
 			}
 			HMath.shuffle(outputPoints);
+			HMath.shuffle(inputPoints);
 		}
 		
 		private function getNearestPoint(p:Point):Point
