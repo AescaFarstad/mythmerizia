@@ -1,0 +1,14 @@
+[
+	{
+		"name":"pop",
+		"value":3,
+		"cap":10,
+		"ps":1
+	},
+	{
+		"name":"food",
+		"value":150,
+		"cap":1000,
+		"ps":3
+	}
+]
