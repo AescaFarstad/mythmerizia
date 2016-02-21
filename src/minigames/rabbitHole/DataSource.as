@@ -1,12 +1,17 @@
 package minigames.rabbitHole 
 {
-	public class DataSoure
+	public class DataSource
 	{
 		[Embed(source = "data/resources.json", mimeType = "application/octet-stream")]
-		private var ResourceData:Class;
+		static private var ResourceData:Class;
 		
 		static public function initEngine(engine:Engine):void
 		{			
+			var resourceData:Object = JSON.parse(new ResourceData());
+			for (var i:int = 0; i < resourceData.length; i++) 
+			{
+				engine.loadResource(resourceData[i]);
+			}
 			engine.postInit();
 		}
 		

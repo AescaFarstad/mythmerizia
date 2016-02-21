@@ -63,11 +63,6 @@ package util.binds
 			return _bypassSave;
 		}
 		
-		public function get persistsThroughAscensions():Boolean
-		{
-			return _persistsThroughAscensions;
-		}
-		
 		public function get name():String
 		{
 			return _name;

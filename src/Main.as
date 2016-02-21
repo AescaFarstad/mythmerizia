@@ -3,7 +3,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
-	import minigames.knitting.KnitMain;
+	import minigames.rabbitHole.RHMain;
 	import resources.Resources;
 	import util.EnterFramer;
 	import util.GameInfoPanel;
@@ -48,9 +48,7 @@ package
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
 			
-			addChild(new KnitMain());
-			
-			//addChild(new BMDMain());
+			addChild(new RHMain());
 			return;
 			
 			

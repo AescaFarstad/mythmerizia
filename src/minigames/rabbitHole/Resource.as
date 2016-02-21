@@ -22,7 +22,17 @@ package minigames.rabbitHole
 			var newValue:Number = _value + timePassed * ps.value / 1000;
 			newValue = Math.min(newValue, cap.value);
 			newValue = Math.max(newValue, 0);
-			value = _value;
+			value = newValue;
+		}
+		
+		public function load(source:Object):void 
+		{
+			if (source.cap)
+				cap.modify(source.cap);
+			if (source.ps)
+				ps.modify(source.ps);
+			if (source.value)
+				value = source.value;
 		}
 		
 	}
