@@ -151,6 +151,20 @@ package util
 			return new Point(intersectionX, intersectionY);
 		}
 		
+		static public function shuffle(array:*):void
+		{
+			var length:int = array.length;
+			if (length < 2)
+				return;
+			for (var i:int = 0; i < length - 1; i++)
+			{
+				var j:int = Math.random() * (length - i) + i;
+				var temp:* = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+		}
+		
 	}
 
 }
