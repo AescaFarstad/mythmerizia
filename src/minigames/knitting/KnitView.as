@@ -30,7 +30,9 @@ package minigames.knitting
 		
 		private function onFrame(e:Event):void
 		{
-			tension = HMath.linearInterp(0, 0.001, 800, 10, stage.mouseY);
+			model.solutionProgress = HMath.linearInterp(0, 0, 800, 1, stage.mouseX);
+			model.movePointsToProgress();
+			tension = HMath.linearInterp(0, 0.001, 800, 10, stage.mouseY) * (1 - model.solutionProgress);
 			render();
 		}
 		

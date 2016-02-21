@@ -26,6 +26,46 @@ package util
 			return null;
 		}
 		
+		static public function weightedRandom(targetList:*, weights:*, count:int, unique:Boolean, 
+				reverse:Boolean = false, reverseOffset:Number = 0):*
+		{
+			var sumOfWeights:Number = 0;
+			var max:Number = Number.NEGATIVE_INFINITY;
+			for (var k:int = 0; k < weights.length; k++)
+			{
+				sumOfWeights += weights[k];
+				max = Math.max(max, weights[k]);
+			}
+			if (reverse)
+			{
+				sumOfWeights = 0;
+				for (k = 0; k < weights.length; k++)
+				{
+					weights[k] = sumOfWeights + reverseOffset - weights[k];
+					sumOfWeights += weights[k];
+				}
+			}
+			var result:Array = [];
+			for (var i:int = 0; i < count; i++)
+			{
+				var target:Number = Math.random() * sumOfWeights;
+				for (k = 0; k < weights.length; k++)
+				{
+					if (unique && result.indexOf(targetList[k]) != -1)
+						continue;
+					target -= weights[k];
+					if (target <= 0)
+					{
+						result.push(targetList[k]);
+						sumOfWeights -= weights[k];
+						break;
+					}
+				}
+			}
+			
+			return result;
+		}
+		
 		static public function shuffleList(targetList:*):void
 		{
 			var length:int = targetList.length;

@@ -3,7 +3,6 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
-	import minigames.gravnav.Gravnav;
 	import minigames.knitting.KnitMain;
 	import resources.Resources;
 	import util.EnterFramer;
@@ -65,7 +64,7 @@ package
 			/*
 			var tsp:TSPSessionManager = new TSPSessionManager();
 			tsp.init(this);*/
-			/**/addChild(new Gravnav());
+			/*addChild(new Gravnav());*/
 			addChild(GameInfoPanel.instance);
 		}
 
