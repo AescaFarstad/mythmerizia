@@ -3,6 +3,8 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import minigames.countries.CountriesMain;
+	import minigames.exclusion.ExclusionMain;
 	import minigames.knitting.KnitMain;
 	import resources.Resources;
 	import util.EnterFramer;
@@ -48,7 +50,7 @@ package
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
 			
-			addChild(new KnitMain());
+			addChild(new ExclusionMain());
 			
 			//addChild(new BMDMain());
 			return;
