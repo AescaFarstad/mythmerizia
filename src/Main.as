@@ -3,6 +3,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import minigames.lerp.LerpMain;
 	import minigames.rabbitHole.RHMain;
 	import resources.Resources;
 	import util.EnterFramer;
@@ -48,7 +49,7 @@ package
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
 			
-			addChild(new RHMain());
+			addChild(new LerpMain());
 			return;
 			
 			

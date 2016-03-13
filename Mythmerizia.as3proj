@@ -5,8 +5,8 @@
     <movie outputType="Application" />
     <movie input="" />
     <movie path="bin\TSPGame.swf" />
-    <movie fps="90" />
-    <movie width="1200" />
+    <movie fps="60" />
+    <movie width="1600" />
     <movie height="1000" />
     <movie version="11" />
     <movie minorVersion="5" />
