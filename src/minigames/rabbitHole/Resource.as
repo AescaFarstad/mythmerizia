@@ -33,6 +33,7 @@ package minigames.rabbitHole
 				ps.modify(source.ps);
 			if (source.value)
 				value = source.value;
+			value = _value;
 		}
 		
 	}

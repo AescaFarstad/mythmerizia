@@ -38,6 +38,7 @@ package util.binds
 		public function modify(add1:Number = 0, multi:Number = 1, add2:Number = 0, source:String = "init", debugSource:IBindable = null):void
 		{
 			_debugSource = debugSource;
+			
 			if (source != SOURCE_NEVER_OVERWRITE)
 			{
 				for (var i:int = 0; i < _modifiers.length; i++) 

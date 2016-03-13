@@ -7,7 +7,6 @@ package minigames.rabbitHole
 		public var bindManager:BindManager = new BindManager();
 		
 		public var resources:Vector.<Resource> = new Vector.<Resource>();
-		
 		public function Engine()
 		{
 			
@@ -38,6 +37,5 @@ package minigames.rabbitHole
 		{
 			
 		}
-		
 	}
 }

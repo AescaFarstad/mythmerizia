@@ -10,6 +10,9 @@ package minigames.rabbitHole
 	{
 		private var engine:Engine;
 		private var view:RHView;
+	
+	public class RHMain extends Sprite
+	{
 		
 		public function RHMain()
 		{
