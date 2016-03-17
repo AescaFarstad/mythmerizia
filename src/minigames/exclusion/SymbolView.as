@@ -31,7 +31,7 @@ package minigames.exclusion
 			
 			for (i = 0; i < symbol.modulo; i++)
 			{
-				var rad:Number = i == 0 ? radius + 20 : radius;
+				rad = i == 0 ? radius + 20 : radius;
 				graphics.lineTo(rad * Math.cos(sampleAngle * i), rad * Math.sin(sampleAngle * i));
 			}
 			

@@ -4,8 +4,8 @@ package minigames.exclusion
 	import util.SeededRandom;
 	public class ExclusionModel
 	{
-		public var symbols:Vector.<Symbol> = new Vector.<Symbol>();
-		private var random:SeededRandom = new SeededRandom(14135134);
+		public var symbols:Vector.<Symbol>;
+		private var random:SeededRandom = new SeededRandom(Math.random() * int.MAX_VALUE);
 		
 		public var onVictory:Signal = new Signal();
 		public var isValid:Boolean;
@@ -18,23 +18,24 @@ package minigames.exclusion
 		
 		public function init():void
 		{
-			var numSymbols:int = random.getInt(4, 7);
+			var numSymbols:int = random.getInt(5, 8);
 			
+			symbols = new Vector.<Symbol>();
 			for (var i:int = 0; i < numSymbols; i++)
 			{
-				var symbol:Symbol = new Symbol(random.getInt(2, 5));
+				var symbol:Symbol = new Symbol(random.getInt(2, 3));
 				symbols.push(symbol);
 			}
 			
 			for (i = 0; i < numSymbols; i++)
 			{
-				var numConnections:int = random.getInt(0, numSymbols);
+				var numConnections:int = random.getInt(2, numSymbols);
 				symbol = null;
-				for (var j:int = 0; j < numConnections; j++)
+				for (var j:int = 0; symbols[i].connections.length < numConnections; j++)
 				{
-					while (!symbol || symbol == symbols[j] || symbols[j].connections.indexOf(symbol) != -1)						
+					while (!symbol || symbol == symbols[i] || symbols[i].connections.indexOf(symbol) != -1)						
 						symbol = random.getItem(symbols);
-					symbols[j].connections.push(symbol);
+					symbols[i].connections.push(symbol);
 				}
 			}
 			
@@ -57,7 +58,9 @@ package minigames.exclusion
 			var frontier:Vector.<int> = new Vector.<int>();
 			frontier.push(symbolsToState());
 			var exploredStates:Vector.<int> = new Vector.<int>();
+			this.distance = 0;
 			var distance:int = 0;
+			isValid = false;
 			
 			while (frontier.length > 0)
 			{
@@ -83,9 +86,25 @@ package minigames.exclusion
 			}
 		}
 		
-		private function nudgeInt(state:int, symbol:int):void
+		private function nudgeInt(state:int, symbol:int):int
 		{
-			var val:int = (state / Math.pow(10, symbol)) % ;
+			
+			state = nudgeSymbol(state, symbol);
+			for (var i:int = 0; i < symbols[symbol].connections.length; i++) 
+			{
+				state = nudgeSymbol(state, symbols[symbol].connections[i]);
+			}
+			return state;
+			
+			function nudgeSymbol(st:int, sym:int):int
+			{				
+				var val:int = ((state % Math.pow(10, symbol + 1)) / Math.pow(10, symbol));
+				st -= Math.pow(10, symbol) * val;
+				val = (val + 1) % symbols[sym].modulo;
+				st += Math.pow(10, symbol) * val;
+				return st;
+			}
+			
 		}
 		
 		private function symbolsToState():int

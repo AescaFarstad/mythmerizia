@@ -18,7 +18,12 @@ package minigames.exclusion
 			var model:ExclusionModel = new ExclusionModel();
 			var view:ExclusionView = new ExclusionView();
 			addChild(view);
-			model.init();
+			
+			while(model.distance == 0 || model.distance < 7 || !model.isValid)
+				model.init();
+			
+			
+			
 			view.load(model);
 			
 			view.x = 200;

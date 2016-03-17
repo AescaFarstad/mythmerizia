@@ -3,6 +3,11 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
+	import minigames.clik_or_crit.CCMain;
+	import minigames.exclusion.ExclusionMain;
+	import minigames.gravnav.Gravnav;
+	import minigames.knitting.KnitMain;
+	import minigames.labris.LabrisMain;
 	import minigames.lerp.LerpMain;
 	import minigames.rabbitHole.RHMain;
 	import resources.Resources;
@@ -49,13 +54,8 @@ package
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
 			
-			addChild(new LerpMain());
+			addChild(new CCMain());
 			return;
-			
-			
-			
-			/*var binder:TSPBinder = new TSPBinder();
-			binder.start(this);*/
 			
 			//addChild(new NavGraphMain());
 			/*return;*/
