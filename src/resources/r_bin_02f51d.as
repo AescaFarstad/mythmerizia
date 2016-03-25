@@ -9,10 +9,22 @@
 		public function r_bin_02f51d() 
 		{
 			 
-			__binaryResourceEnum = new <String>["TSPLevels"];
+			__binaryResourceEnum = new <String>["TSPLevels", "settings", "countries"];
 			
 		}
 			
+		[Embed(source = "../../lib/click_or_crit/countries.json", mimeType="application/octet-stream")]
+		internal var __countriesClass:Class;		
+		internal const __countriesPath:String = "/click_or_crit/countries.json";
+		////click_or_crit/countries.json
+		public var countries:ByteArray;
+		
+		[Embed(source = "../../lib/click_or_crit/settings.json", mimeType="application/octet-stream")]
+		internal var __settingsClass:Class;		
+		internal const __settingsPath:String = "/click_or_crit/settings.json";
+		////click_or_crit/settings.json
+		public var settings:ByteArray;
+		
 		[Embed(source = "../../lib/TSPLevels.json", mimeType="application/octet-stream")]
 		internal var __TSPLevelsClass:Class;		
 		internal const __TSPLevelsPath:String = "/TSPLevels.json";

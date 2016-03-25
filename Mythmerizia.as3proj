@@ -6,8 +6,8 @@
     <movie input="" />
     <movie path="bin\TSPGame.swf" />
     <movie fps="60" />
-    <movie width="1600" />
-    <movie height="1000" />
+    <movie width="1280" />
+    <movie height="768" />
     <movie version="11" />
     <movie minorVersion="5" />
     <movie platform="Flash Player" />

@@ -56,16 +56,22 @@ package util
 		
 		static public function distanceFromPointToLine(px:Number, py:Number, l1x:Number, l1y:Number, l2x:Number, l2y:Number):Number 
 		{
+			return Math.abs(directedDistanceFromPointToLine(px, py, l1x, l1y, l2x, l2y));
+		}
+		
+		//is positive if the point is to the left of the line
+		static public function directedDistanceFromPointToLine(px:Number, py:Number, l1x:Number, l1y:Number, l2x:Number, l2y:Number):Number 
+		{
 			if (l1x == l2x)
 			{
 				if (l1y == l2y)
 					throw new Error("Line end points must be different");
-				return Math.abs(l1x - px);
+				return l1x - px;
 			}
 			var A:Number = l1y - l2y;
 			var B:Number = l2x - l1x;
 			var C:Number = l1x * l2y - l2x * l1y;
-			return Math.abs(A * px + B * py + C) / Math.sqrt(A * A + B * B);
+			return (A * px + B * py + C) / Math.sqrt(A * A + B * B);
 		}
 		
 		static public function distanceFromPointToSegment(px:Number, py:Number, s1x:Number, s1y:Number, s2x:Number, s2y:Number):Number 
@@ -165,6 +171,85 @@ package util
 			}
 		}
 		
+		static public function pointInPolygonRelation(px:Number, py:Number, verticiesList:*):int
+		{
+			for (var i:int = 0; i < verticiesList.length; i++) 
+			{
+				var l1:* = verticiesList[i];
+				var l2:* = verticiesList[(i + 1) % verticiesList.length];
+				var orientation:Number = ((l1.x - px) * (l2.y - py) - (l1.y - py) * (l2.x - px));
+				if (orientation >= 0)
+					return orientation == 0 ? 0 : -1;
+			}
+			return 1;
+		}
+		
+		static public function convexHull(ipointsList:*):Array
+		{
+			if (ipointsList.length < 3)
+				return [];
+				
+			var maxX:* = ipointsList[0];
+			var minX:* = ipointsList[0];
+			
+			for (var i:int = 0; i < ipointsList.length; i++) 
+			{
+				if (maxX.x < ipointsList[i].x)
+					maxX = ipointsList[i];
+				if (minX.x > ipointsList[i].x)
+					minX = ipointsList[i];
+			}
+			
+			var hull:Array = [maxX, minX];
+			var outside:* = ipointsList.slice();
+			outside.splice(outside.indexOf(maxX), 1);
+			outside.splice(outside.indexOf(minX), 1);
+			
+			while (outside.length > 0)
+			{
+				for (var j:int = 0; j < hull.length; j++) 
+				{
+					if (extendHull())
+						j--;
+				}
+			}
+			
+			return hull;
+			
+			function extendHull():Boolean
+			{
+				var from:int = j;
+				var to:int = (j + 1) % hull.length;
+				var bestPoint:* = outside[0];
+				var bestDistance:Number = Number.NEGATIVE_INFINITY;
+				for (var k:int = 0; k < outside.length; k++) 
+				{
+					var distance:Number = directedDistanceFromPointToLine(outside[k].x, outside[k].y, hull[from].x, hull[from].y, hull[to].x, hull[to].y);
+					if (distance > bestDistance)
+					{
+						bestDistance = distance;
+						bestPoint = outside[k];
+					}
+				}
+				
+				if (bestDistance > 0)
+				{
+					var newOutside:Array = [];
+					var polygon:Array = [hull[from], bestPoint, hull[to]];
+					for (k = 0; k < outside.length; k++) 
+					{
+						if (pointInPolygonRelation(outside[k].x, outside[k].y, polygon) < 0)
+						{
+							newOutside.push(outside[k]);
+						}
+					}
+					outside = newOutside;
+					hull.splice(to, 0, bestPoint);
+				}
+				return bestDistance > 0;
+			}			
+		}
+		/**/
 	}
 
 }

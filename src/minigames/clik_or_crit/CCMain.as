@@ -1,55 +1,53 @@
 package minigames.clik_or_crit 
 {
-	import engine.EngineTimeManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import minigames.clik_or_crit.data.CCModel;
+	import flash.geom.Point;
+	import minigames.clik_or_crit.lib.CCDataSource;
+	import minigames.clik_or_crit.lib.CCLibrary;
+	import minigames.clik_or_crit.model.CCModel;
 	import minigames.clik_or_crit.view.CCView;
 	import util.EnterFrameEvent;
 	import util.EnterFramer;
+	import util.HMath;
 	
-	
-
 	public class CCMain extends Sprite 
 	{
 		private var model:CCModel;
 		private var view:CCView;
-		private var timeManager:EngineTimeManager;
-		private var input:Input;
 		
 		public function CCMain() 
 		{
+			super();
 			addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
 		private function init(e:Event):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
+			/**/
+			CCLibrary.init();
+			
 			model = new CCModel();
+			model.init();
+			CCDataSource.init(model);			
+			
 			view = new CCView();
 			addChild(view);
 			view.load(model);
-			input = new Input(view, model);
 			
-			/*
-			for (var i:int = 0; i < model.playerParty.heroes.length; i++) 
-			{
-				trace(model.playerParty.heroes[i].hp.value, model.playerParty.heroes[i].hp.maxValue);
-			}		*/
-			
-			//EnterFramer.addEnterFrameUpdate(onFrame);
-			timeManager = new EngineTimeManager();
-			timeManager.load(this);
+			EnterFramer.addEnterFrameUpdate(onFrame);			
 		}
 		
-		public function update(timePassed:int):void 
+		
+		
+		private function onFrame(e:EnterFrameEvent):void 
 		{
-			model.update(timePassed);
-			view.update(timePassed);
-			if (model.isComplete)
-				timeManager.clear();
+			model.update(e.timePassed);
+			view.update(e.timePassed);
 		}
 		
 	}
+	
 
 }
