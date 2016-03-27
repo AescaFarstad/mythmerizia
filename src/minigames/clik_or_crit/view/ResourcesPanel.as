@@ -58,6 +58,16 @@ package minigames.clik_or_crit.view
 			}
 		}
 		
+		public function clear():void 
+		{
+			//TODO POOL
+			for (var i:int = 0; i < views.length; i++) 
+			{
+				views[i].cleanUp();				
+			}
+			views = new Vector.<ResourceView>();
+		}
+		
 	}
 
 }

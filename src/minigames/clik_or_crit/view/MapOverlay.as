@@ -157,6 +157,11 @@ package minigames.clik_or_crit.view
 				borderCanvas.graphics.endFill();
 			}
 		}
+		
+		public function clear():void 
+		{
+			
+		}
 	}
 
 }

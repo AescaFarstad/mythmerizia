@@ -42,6 +42,12 @@ package minigames.clik_or_crit.view
 			labelPs.text = S.format.black(14) + "+" + resource.ps.value.toFixed() + "/s";
 		}
 		
+		public function cleanUp():void 
+		{
+			if (parent)
+				parent.removeChild(this);
+		}
+		
 	}
 
 }

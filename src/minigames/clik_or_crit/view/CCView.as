@@ -27,6 +27,13 @@ package minigames.clik_or_crit.view
 			currentScreen.update(timePassed);
 		}
 		
+		public function clear():void 
+		{
+			currentScreen.clear();
+			removeChild(currentScreen);
+			currentScreen = null;
+		}
+		
 	}
 
 }

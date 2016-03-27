@@ -3,6 +3,7 @@ package minigames.clik_or_crit
 	import engine.EngineTimeManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.geom.Point;
 	import minigames.clik_or_crit.lib.CCDataSource;
 	import minigames.clik_or_crit.lib.CCLibrary;
@@ -42,6 +43,14 @@ package minigames.clik_or_crit
 			EnterFramer.addEnterFrameUpdate(onFrame);
 			
 			timeManager.load(this);
+			
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		}
+		
+		private function onKeyDown(e:KeyboardEvent):void 
+		{
+			view.clear();
+			view.load(model);
 		}
 		
 		public function update(timePassed:int):void

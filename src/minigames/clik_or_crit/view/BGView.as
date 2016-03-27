@@ -26,6 +26,11 @@ package minigames.clik_or_crit.view
 			bgImage.y = vp.gameToStage(0, 0).y;
 		}
 		
+		public function clear():void 
+		{
+			
+		}
+		
 	}
 
 }

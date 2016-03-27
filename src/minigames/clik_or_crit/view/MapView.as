@@ -70,8 +70,8 @@ package minigames.clik_or_crit.view
 			
 			overlay.onCountryClick.add(onCountryClick);
 			scouting.onCountryTaken.add(onCountryTaken);
-			scouting.onCountryDiscovered.add(onCountryDiscovered);			
-			scouting.onBuildingConstructed.add(onBuildingConstructed);	
+			scouting.onCountryDiscovered.add(onCountryDiscovered);
+			scouting.onBuildingConstructed.add(onBuildingConstructed);
 		}
 		
 		private function onBuildingConstructed(building:BuildingItem, country:Country):void 
@@ -91,6 +91,7 @@ package minigames.clik_or_crit.view
 			overlay.addChild(anim);
 			anim.init(2000, 200, 8);
 			updater.push(anim);
+			//TODO POOL
 			anim.tag = new ViewPortBinder(country, anim, vp);
 			anim.onUnplugged.addOnce(clearBinders);
 			
@@ -187,6 +188,31 @@ package minigames.clik_or_crit.view
 			var scale:Number = HMath.nonlinearInterp(minLinearScale, minScale, maxLinearScale, maxScale, 1.5, linearScale);
 			applyScale(scale, sourcePoint);
 			countryMenu.hide();
+		}
+		
+		public function clear():void 
+		{
+			isDragging = false;
+			dragStartPoint = null;
+			ignoreNextClick = false;
+			
+			
+			stage.removeEventListener(MouseEvent.MOUSE_WHEEL, onWheel);
+			removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			
+			scouting.onCountryTaken.remove(onCountryTaken);
+			scouting.onCountryDiscovered.remove(onCountryDiscovered);
+			scouting.onBuildingConstructed.remove(onBuildingConstructed);
+			
+			countryMenu.hide();
+			
+			while (!updater.isEmpty)
+				updater.forceComplete();
+				
+			bg.clear();
+			overlay.clear();
 		}
 		
 	}

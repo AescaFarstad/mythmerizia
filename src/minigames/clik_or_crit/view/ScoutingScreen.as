@@ -34,8 +34,14 @@ package minigames.clik_or_crit.view
 			mapView.load(model);
 			resources.load(model);
 			
-			model.scouting.scoutProcess.onStarted.add(onScoutingStarted);			
-			model.scouting.buildingProcess.onStarted.add(onBuildingStarted);			
+			model.scouting.scoutProcess.onStarted.add(onScoutingStarted);
+			model.scouting.buildingProcess.onStarted.add(onBuildingStarted);
+			
+			if (!model.scouting.scoutProcess.isComplete)
+				onScoutingStarted();
+				
+			if (!model.scouting.buildingProcess.isComplete)
+				onBuildingStarted();
 		}
 		
 		private function onBuildingStarted():void 
@@ -48,6 +54,7 @@ package minigames.clik_or_crit.view
 			LayoutUtil.moveToSameBottom(pb, { y:0, height:stage.stageHeight }, -10);
 			LayoutUtil.moveToSameLeft(pb, { x:180 }, 10);
 			
+			//TODO POOL
 			var updatable:SimpleUpdatable = new SimpleUpdatable();
 			updatable.load(updatePb, onComplete);
 			updater.push(updatable);
@@ -80,6 +87,7 @@ package minigames.clik_or_crit.view
 			LayoutUtil.moveToSameBottom(pb, { y:0, height:stage.stageHeight }, -10);
 			LayoutUtil.moveToSameLeft(pb, { x:0 }, 10);
 			
+			//TODO POOL
 			var updatable:SimpleUpdatable = new SimpleUpdatable();
 			updatable.load(updatePb, onComplete);
 			updater.push(updatable);
@@ -107,6 +115,16 @@ package minigames.clik_or_crit.view
 			resources.update(timePassed);
 			mapView.update(timePassed);
 			updater.update(timePassed);
+		}
+		
+		public function clear():void
+		{
+			model.scouting.scoutProcess.onStarted.remove(onScoutingStarted);
+			model.scouting.buildingProcess.onStarted.remove(onBuildingStarted);
+			
+			updater.terminate();
+			resources.clear();
+			mapView.clear();
 		}
 	}
 
