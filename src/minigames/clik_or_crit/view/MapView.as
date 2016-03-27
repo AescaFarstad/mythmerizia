@@ -8,8 +8,11 @@ package minigames.clik_or_crit.view
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
+	import minigames.bmd.Building;
+	import minigames.clik_or_crit.lib.BuildingItem;
 	import minigames.clik_or_crit.model.CCModel;
 	import minigames.clik_or_crit.model.Country;
+	import minigames.clik_or_crit.model.Scouting;
 	import util.HMath;
 	
 	public class MapView extends Sprite 
@@ -22,6 +25,7 @@ package minigames.clik_or_crit.view
 		private var linearScale:int;
 		
 		private var model:CCModel;
+		private var scouting:Scouting;
 		
 		private var vp:ViewPort = new ViewPort();
 		private var isDragging:Boolean;
@@ -54,6 +58,7 @@ package minigames.clik_or_crit.view
 		public function load(model:CCModel):void 
 		{
 			this.model = model;
+			scouting = model.scouting;
 			vp.setTo(0, 0, stage.stageWidth, stage.stageHeight);
 			
 			stage.addEventListener(MouseEvent.MOUSE_WHEEL, onWheel);
@@ -64,9 +69,14 @@ package minigames.clik_or_crit.view
 			countryMenu.load(model, vp);
 			
 			overlay.onCountryClick.add(onCountryClick);
-			model.onCountryTaken.add(onCountryTaken);
-			model.onCountryDiscovered.add(onCountryDiscovered);			
-			
+			scouting.onCountryTaken.add(onCountryTaken);
+			scouting.onCountryDiscovered.add(onCountryDiscovered);			
+			scouting.onBuildingConstructed.add(onBuildingConstructed);	
+		}
+		
+		private function onBuildingConstructed(building:BuildingItem, country:Country):void 
+		{
+			render();
 		}
 		
 		private function onCountryTaken(country:Country):void 
@@ -94,7 +104,7 @@ package minigames.clik_or_crit.view
 		private function onCountryClick(country:Country):void 
 		{
 			if (!country.owned)
-				model.takeCountry(country);
+				model.input.takeCountry(country);
 			else
 				countryMenu.show(country);
 		}

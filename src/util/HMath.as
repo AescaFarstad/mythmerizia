@@ -1,6 +1,7 @@
 package util
 {
 	import flash.geom.Point;
+	import minigames.clik_or_crit.model.Country;
 	
 	public class HMath 
 	{		
@@ -248,6 +249,11 @@ package util
 				}
 				return bestDistance > 0;
 			}			
+		}
+		
+		static public function distance(ipoint1:*, ipoint2:*):Number 
+		{
+			return Math.sqrt((ipoint2.x - ipoint1.x) * (ipoint2.x - ipoint1.x) + (ipoint2.y - ipoint1.y) * (ipoint2.y - ipoint1.y));
 		}
 		/**/
 	}

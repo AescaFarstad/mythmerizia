@@ -300,6 +300,30 @@ package components
 			return sp;
 		}
 		*/
+		
+		public function setMaxX(value:Number):void
+		{
+			maxX = value;
+			resetText();
+		}
+		
+		public function setMaxY(value:Number):void
+		{
+			maxY = value;
+			
+			resetText();
+		}
+		
+		private function resetText():void
+		{
+			if (rawText)
+			{
+				var saveTxt:String = rawText;
+				rawText = "";
+				text = saveTxt;				
+			}			
+		}
+		
 		public function set text(_text:String):void
 		{
 			if (rawText == _text)

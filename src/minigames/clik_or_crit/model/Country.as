@@ -1,5 +1,6 @@
 package minigames.clik_or_crit.model 
 {
+	import minigames.clik_or_crit.lib.BuildingItem;
 	import minigames.clik_or_crit.lib.CountryItem;
 	
 	public class Country 
@@ -10,6 +11,7 @@ package minigames.clik_or_crit.model
 		public var owned:Boolean;
 		public var x:Number;
 		public var y:Number;
+		public var building:BuildingItem;
 		
 		public function Country() 
 		{

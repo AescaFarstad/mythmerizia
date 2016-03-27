@@ -46,6 +46,7 @@
       <TSPLevels type="binary" id="9cea85" path="\TSPLevels.json" />
       <settings type="binary" id="61fef6" path="\click_or_crit\settings.json" />
       <countries type="binary" id="800127" path="\click_or_crit\countries.json" />
+      <buildings type="binary" id="89204f" path="\click_or_crit\buildings.json" />
     </bin>
     <pics type="folder" id="5503ab">
       <emptyStar type="image" id="c8d488" path="\pics\emptyStar.png" />
@@ -67,6 +68,12 @@
           <nothing type="image" id="95b4d7" path="\pics\GearItemNothing.png" />
         </gearViewItem>
       </clickOrCrit>
+      <cc type="folder" id="bbe2fa">
+        <Mine type="image" id="4a4f03" path="\click_or_crit\pics\medieval_mine.png" />
+        <Warehouse type="image" id="ed975d" path="\click_or_crit\pics\military_hangar.png" />
+        <Bank type="image" id="be39d0" path="\click_or_crit\pics\modern_oldBuilding.png" />
+        <Lab type="image" id="e59d46" path="\click_or_crit\pics\modern_skyscraper.png" />
+      </cc>
     </pics>
   </Resources>
 </Content>

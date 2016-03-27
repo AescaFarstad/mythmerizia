@@ -15,9 +15,10 @@ package minigames.clik_or_crit.lib
 			
 			model.loadResource({name:"money", cap:1000, value:100});
 			
-			var startingCountry:Country = new SeededRandom().getItem(model.countries);
+			var startingCountry:Country = new SeededRandom().getItem(model.scouting.countries);
 			startingCountry.owned = true;
 			startingCountry.discovered = true;
+			startingCountry.building = CCLibrary.buildings.byID(1);
 			
 		}
 		

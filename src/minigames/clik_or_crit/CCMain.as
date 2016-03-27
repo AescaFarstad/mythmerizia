@@ -1,5 +1,6 @@
 package minigames.clik_or_crit 
 {
+	import engine.EngineTimeManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -15,6 +16,8 @@ package minigames.clik_or_crit
 	{
 		private var model:CCModel;
 		private var view:CCView;
+		
+		private var timeManager:EngineTimeManager = new EngineTimeManager();
 		
 		public function CCMain() 
 		{
@@ -36,15 +39,21 @@ package minigames.clik_or_crit
 			addChild(view);
 			view.load(model);
 			
-			EnterFramer.addEnterFrameUpdate(onFrame);			
+			EnterFramer.addEnterFrameUpdate(onFrame);
+			
+			timeManager.load(this);
 		}
 		
-		
+		public function update(timePassed:int):void
+		{
+			timePassed *= 4;
+			model.update(timePassed);
+			view.update(timePassed);			
+		}
 		
 		private function onFrame(e:EnterFrameEvent):void 
 		{
-			model.update(e.timePassed);
-			view.update(e.timePassed);
+			timeManager.onFrame(null);
 		}
 		
 	}
