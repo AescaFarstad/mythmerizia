@@ -6,8 +6,8 @@
     <movie input="" />
     <movie path="bin\TSPGame.swf" />
     <movie fps="60" />
-    <movie width="1280" />
-    <movie height="768" />
+    <movie width="800" />
+    <movie height="600" />
     <movie version="11" />
     <movie minorVersion="5" />
     <movie platform="Flash Player" />
@@ -84,7 +84,7 @@
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
-    <option showHiddenPaths="False" />
+    <option showHiddenPaths="True" />
     <option testMovie="Default" />
     <option testMovieCommand="" />
   </options>

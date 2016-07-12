@@ -9,7 +9,9 @@ package
 	import minigames.knitting.KnitMain;
 	import minigames.labris.LabrisMain;
 	import minigames.lerp.LerpMain;
+	import minigames.quad.QuadMain;
 	import minigames.rabbitHole.RHMain;
+	import minigames.roads.Roads;
 	import resources.Resources;
 	import util.EnterFramer;
 	import util.GameInfoPanel;
@@ -53,6 +55,12 @@ package
 			
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
+			
+			addChild(new Roads());
+			return;
+			
+			addChild(new QuadMain());
+			return;
 			
 			addChild(new CCMain());
 			return;
