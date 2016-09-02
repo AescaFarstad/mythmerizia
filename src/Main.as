@@ -12,6 +12,7 @@ package
 	import minigames.quad.QuadMain;
 	import minigames.rabbitHole.RHMain;
 	import minigames.roads.Roads;
+	import minigames.trader.TraderMain;
 	import resources.Resources;
 	import util.EnterFramer;
 	import util.GameInfoPanel;
@@ -55,6 +56,9 @@ package
 			
 			SimpleLogger.instance.init(this);
 			addChild(new EnterFramer());
+			/*
+			addChild(new TraderMain());
+			return;*/
 			
 			addChild(new Roads());
 			return;

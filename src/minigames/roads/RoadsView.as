@@ -1,6 +1,11 @@
 package minigames.roads 
 {
+	import components.Label;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	import util.HMath;
+	import util.layout.LayoutUtil;
 	
 	public class RoadsView extends Sprite
 	{
@@ -8,11 +13,19 @@ package minigames.roads
 		static public var scale:Number = 100;
 		
 		public var stationViews:Vector.<StationView> = new Vector.<StationView>();
+		public var carViews:Vector.<CarView> = new Vector.<CarView>();
+		public var moneyLabel:Label;
+		public var currentRoad:Road;
+		public var roadView:RoadInfo;
 		
 		public function RoadsView()
 		{
 			super();
+			moneyLabel = new Label();
+			addChild(moneyLabel);
 			
+			roadView = new RoadInfo();
+			addChild(roadView);
 		}
 		
 		public function load(model:RoadsModel):void
@@ -27,15 +40,101 @@ package minigames.roads
 				stationViews.push(view);
 			}
 			
+			for (i = 0; i < model.cars.length; i++)
+			{
+				addCarView(model.cars[i]);
+			}
+			
+			model.onCarSpawned.add(onCarSpawned);
+			model.onCarExit.add(onCarExit);
+			model.money.onChange.add(onMoneyChanged)
+			onMoneyChanged();
+			addEventListener(MouseEvent.MOUSE_MOVE, onMove);
+			addEventListener(MouseEvent.CLICK, onClick);
+		}
+		
+		private function onClick(e:MouseEvent):void
+		{
+			if (currentRoad)
+				currentRoad.tmpCapacityIncrease += 0.5;
+			roadView.load(currentRoad, model);
+			
+			LayoutUtil.moveToSameRight(roadView, { x:0, width:stage.stageWidth - 50 } );
+			moneyLabel.y = 50;
+		}
+		
+		private function onMove(e:MouseEvent):void
+		{
+			currentRoad = findNearestRoad(new Point(e.localX / scale, e.localY / scale));
+		}
+		
+		private function findNearestRoad(point:Point):Road
+		{
+			var bestDistance:Number = Number.POSITIVE_INFINITY;
+			var bestSegment:Road;
+			for (var i:int = 0; i < model.roads.length; i++)
+			{
+				var distance:Number = HMath.distance(point, model.roads[i].center);
+				if (distance < bestDistance)
+				{
+					bestDistance = distance;
+					bestSegment = model.roads[i];
+				}
+			}
+			return bestSegment;
+		}
+		
+		private function onMoneyChanged():void
+		{
+			moneyLabel.text = S.format.black(24) + model.money.value.toFixed();
+			LayoutUtil.moveToSameRight(moneyLabel, { x:0, width:stage.stageWidth - 50 } );
+			moneyLabel.y = -50;
+		}
+		
+		private function onCarExit(car:Car):void
+		{
+			for (var i:int = 0; i < carViews.length; i++)
+			{
+				if (carViews[i].car == car)
+				{
+					removeChild(carViews[i])
+					carViews.splice(i, 1);
+					return;
+				}
+			}
+		}
+		
+		private function onCarSpawned(car:Car):void
+		{
+			addCarView(car);
+		}
+		
+		private function addCarView(car:Car):void
+		{
+			var carView:CarView = new CarView();
+			carView.load(car, model);
+			addChild(carView);
+			carViews.push(carView);
 		}
 		
 		public function update(timePassed:int):void
 		{
 			graphics.clear();
+			graphics.beginFill(0, 0);
+			graphics.drawRect(0, 0, 1000, 1000);			
 			
 			drawPoints();
 			drawRoads();
 			drawStations();
+			
+			for (var i:int = 0; i < carViews.length; i++)
+			{
+				var p1:Point = carViews[i].car.direction > 0 ? carViews[i].car.road.p1 : carViews[i].car.road.p2;
+				var p2:Point = carViews[i].car.direction > 0 ? carViews[i].car.road.p2 : carViews[i].car.road.p1;
+				carViews[i].x = scale * HMath.linearInterp(0, p1.x, 1, p2.x, carViews[i].car.progress);
+				carViews[i].y = scale * HMath.linearInterp(0, p1.y, 1, p2.y, carViews[i].car.progress);
+			}
+			roadView.update();
 		}
 		
 		private function drawStations():void
@@ -43,8 +142,9 @@ package minigames.roads
 			graphics.lineStyle(4, 0x009900);
 			for (var i:int = 0; i < model.stations.length; i++)
 			{
-				graphics.beginFill(
+				graphics.beginFill(0, 0);
 				graphics.drawRect(model.stations[i].p1.x * scale, model.stations[i].p1.y * scale - scale / 6, scale, scale / 3);
+				graphics.endFill();
 			}
 		}
 		
@@ -53,9 +153,20 @@ package minigames.roads
 			graphics.lineStyle(2, 0);
 			for (var i:int = 0; i < model.roads.length; i++)
 			{
-				graphics.moveTo(model.roads[i].p1.x * scale, model.roads[i].p1.y * scale);
-				graphics.lineTo(model.roads[i].p2.x * scale, model.roads[i].p2.y * scale);
+				drawRoad(model.roads[i]);
 			}
+			if (currentRoad)
+			{
+				graphics.lineStyle(3, 0x118811);
+				drawRoad(currentRoad);
+			}
+		}
+		
+		private function drawRoad(road:Road):void
+		{
+			graphics.moveTo(road.p1.x * scale, road.p1.y * scale);
+			graphics.lineTo(road.p2.x * scale, road.p2.y * scale);
+			
 		}
 		
 		private function drawPoints():void
