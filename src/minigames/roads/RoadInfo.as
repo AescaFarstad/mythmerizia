@@ -54,6 +54,7 @@ package minigames.roads
 			if (!road)
 			{		
 				visible = false;
+				return;
 			}
 			else
 				visible = true;
@@ -78,8 +79,8 @@ package minigames.roads
 			if (!road)
 				return;
 			capacity.text = S.format.black(16) + "Capacity: " + road.getResultingCapacity().toFixed(1);
-			maxSpeed.text = S.format.black(16) + "Max Speed: " + (road.maxVelocity * 100).toFixed();
-			currentSpeed.text = S.format.black(16) + "Speed: " + (road.getSpeed() * 100).toFixed();
+			maxSpeed.text = S.format.black(16) + "Max Speed: " + (road.maxVelocity * 100 * 100).toFixed();
+			currentSpeed.text = S.format.black(16) + "Speed: " + (road.getSpeed() * 100 * 100).toFixed();
 			upCapacity.text = "Up capacity (" + model.getUpCapacityPrice(road) + ")";
 			upMaxSpeed.text = "Up speed (" + model.getUpSpeedPrice(road) + ")";
 		}

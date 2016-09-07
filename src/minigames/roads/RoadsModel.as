@@ -32,6 +32,7 @@ package minigames.roads
 		public var upgradesPurchased:int;
 		public var upSpeedPurchased:int;
 		public var upCapacityPurchased:int;
+		public var clickEffectiveness:Number = 1;
 		
 		public function RoadsModel()
 		{
@@ -184,7 +185,7 @@ package minigames.roads
 			if (price > money.value)
 				return;
 				
-			road.numCapacityInc++;
+			road.numSpeedInc++;
 			upgradesPurchased++;
 			upSpeedPurchased++;
 			road.maxVelocity += 1 / 2 / 1000 / 5;
@@ -197,7 +198,7 @@ package minigames.roads
 			if (price > money.value)
 				return;
 			
-			road.numSpeedInc++;
+			road.numCapacityInc++;
 			upgradesPurchased++;
 			upCapacityPurchased++;
 			road.capacity += 1;
@@ -206,12 +207,17 @@ package minigames.roads
 		
 		public function getUpCapacityPrice(road:Road):Number
 		{
-			return Math.floor(10 * Math.pow(1.2, road.numCapacityInc) + upgradesPurchased + Math.pow(upCapacityPurchased * 2, 1.5));
+			return Math.floor(10 * Math.pow(1.3, road.numCapacityInc) + upgradesPurchased + Math.pow(upCapacityPurchased * 2, 1.5));
 		}
 		
 		public function getUpSpeedPrice(road:Road):Number
 		{
-			return Math.floor(10 * Math.pow(1.2, road.numSpeedInc) + upgradesPurchased + Math.pow(upSpeedPurchased * 2, 1.5));
+			return Math.floor(10 * Math.pow(1.3, road.numSpeedInc) + upgradesPurchased + Math.pow(upSpeedPurchased * 2, 1.5));
+		}
+		
+		public function upTmpCapacity(currentRoad:Road):void
+		{
+			currentRoad.tmpCapacityIncrease += 0.5 * clickEffectiveness;
 		}
 		
 	}

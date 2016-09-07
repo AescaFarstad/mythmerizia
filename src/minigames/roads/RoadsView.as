@@ -16,6 +16,7 @@ package minigames.roads
 		public var carViews:Vector.<CarView> = new Vector.<CarView>();
 		public var moneyLabel:Label;
 		public var currentRoad:Road;
+		public var fixedRoad:Road;
 		public var roadView:RoadInfo;
 		
 		public function RoadsView()
@@ -56,16 +57,22 @@ package minigames.roads
 		private function onClick(e:MouseEvent):void
 		{
 			if (currentRoad)
-				currentRoad.tmpCapacityIncrease += 0.5;
-			roadView.load(currentRoad, model);
+			{
+				model.upTmpCapacity(currentRoad);
+				fixedRoad = currentRoad;
+			}
+				
+			roadView.load(fixedRoad, model);
 			
 			LayoutUtil.moveToSameRight(roadView, { x:0, width:stage.stageWidth - 50 } );
-			moneyLabel.y = 50;
 		}
 		
 		private function onMove(e:MouseEvent):void
 		{
-			currentRoad = findNearestRoad(new Point(e.localX / scale, e.localY / scale));
+			var loc:Point = globalToLocal(new Point(e.stageX, e.stageY));
+			loc.x /= scale;
+			loc.y /= scale;
+			currentRoad = findNearestRoad(loc);
 		}
 		
 		private function findNearestRoad(point:Point):Road
@@ -81,7 +88,9 @@ package minigames.roads
 					bestSegment = model.roads[i];
 				}
 			}
-			return bestSegment;
+			if (bestDistance < 1)
+				return bestSegment;
+			return null;
 		}
 		
 		private function onMoneyChanged():void
@@ -124,8 +133,8 @@ package minigames.roads
 			graphics.drawRect(0, 0, 1000, 1000);			
 			
 			drawPoints();
-			drawRoads();
 			drawStations();
+			drawRoads();
 			
 			for (var i:int = 0; i < carViews.length; i++)
 			{
@@ -157,13 +166,20 @@ package minigames.roads
 			}
 			if (currentRoad)
 			{
-				graphics.lineStyle(3, 0x118811);
+				graphics.lineStyle(4, 0x118811);
 				drawRoad(currentRoad);
+			}
+			if (fixedRoad)
+			{
+				graphics.lineStyle(6, 0x1188cc);
+				drawRoad(fixedRoad);
 			}
 		}
 		
 		private function drawRoad(road:Road):void
 		{
+			if (!road)
+				return;
 			graphics.moveTo(road.p1.x * scale, road.p1.y * scale);
 			graphics.lineTo(road.p2.x * scale, road.p2.y * scale);
 			
